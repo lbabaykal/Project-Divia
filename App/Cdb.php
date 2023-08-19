@@ -6,13 +6,14 @@ use PDO;
 class Cdb {
 
     protected string $DB_HOST = '127.127.126.47';
+    protected string $DB_PORT = '3306';
     protected string $DB_NAME = 'Project-Divia';
     protected string $DB_USER = 'babayka';
     protected string $DB_PASS = 'Another16';
     protected PDO $dbh;
 
     public function __construct() {
-        $this->dbh = new \PDO('mysql:host=' . $this->DB_HOST . ';dbname=' . $this->DB_NAME . ';charset=utf8mb4', $this->DB_USER , $this->DB_PASS);
+        $this->dbh = new \PDO('mysql:host=' . $this->DB_HOST . ';dbname=' . $this->DB_NAME . ';port=' . $this->DB_PORT . ';charset=utf8mb4', $this->DB_USER , $this->DB_PASS);
     }
 
     public function query($sql, $class, $params = []): array
