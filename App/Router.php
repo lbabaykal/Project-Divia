@@ -12,7 +12,7 @@ class Router
         self::$routes[$regex] = $route;
     }
 
-    public static function start(): void
+    public static function dispatcher(): void
     {
         $query = urldecode($_SERVER['QUERY_STRING']);
         if (self::searchRoute($query)) {
