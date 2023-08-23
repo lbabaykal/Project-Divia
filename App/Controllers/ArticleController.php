@@ -5,36 +5,37 @@ namespace App\Controllers;
 use App\Cdb;
 use App\Controller;
 use App\View;
-use App\Models\Comments;
-use App\Models\Article as Model_Book;
+use App\Models\CommentsModel;
+use App\Models\ArticleModel;
 
-class Article extends Controller
+class ArticleController extends Controller
 {
     public function actionIndex()
     {
-        $id_article = $this->filterInt($_GET['id']);
-        //is_numeric($id_article) AND
-        if (Model_Book::checkIdBook($id_article)) {
+        $id_article = $this->route['slug'];
+
+        if (ArticleModel::checkIdBook($id_article)) {
 
             $viewMain = new View();
             $TemplateMain = $viewMain->display(TEMPLATES_DIR . 'Main.php');
 
             $viewBook = new View();
-            $dataBook = Model_Book::showOne($id_article);
+            $dataBook = ArticleModel::showOne($id_article);
+
             $TemplateBook = $viewBook->render(TEMPLATES_DIR . 'Full_Article.php', $dataBook);
 
-            $dataRating = Rating::showRating($id_article);
+            $dataRating = RatingController::showRating($id_article);
             $InsertRating = str_replace( '{RATING_ARTICLE}', $dataRating, $TemplateBook );
 
-            $My_Favorites = new My_Favorites();
+            $My_Favorites = new My_FavoritesController();
             $InsertMy_List = str_replace( '{MY_LIST}', $My_Favorites::checkFavourite($id_article), $InsertRating );
 
             $InsertContent = str_replace( '{CONTENT}', $InsertMy_List, $TemplateMain );
 
-
             $viewComments = new View();
-            $dataComments = Comments::showComments($id_article);
+            $dataComments = CommentsModel::showComments($id_article);
             $TemplateComments = $viewComments->render(TEMPLATES_DIR . 'Comment.php', $dataComments);
+
 
             $Answer = str_replace( '{COMMENTS}', $TemplateComments, $InsertContent );
 
@@ -48,7 +49,7 @@ class Article extends Controller
                 $Answer = str_replace( '{ADD_COMMENT}', $dataAdd_Comment, $Answer );
             }
 
-            $Login = new Login();
+            $Login = new LoginController();
             $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $Answer );
 
             return $InsertLogin;
@@ -65,15 +66,15 @@ class Article extends Controller
         $templateBA =  $viewBA->display(ADMIN_TEMPLATES_DIR . '/AJAX/Article_Add.php');
 
         $select = '';
-        $allChapter = Model_Book::showChapters();
+        $allChapter = ArticleModel::showChapters();
         foreach ($allChapter as $key => $value) {
-            $select  .= '<option value="' . $value->id_chapter . '">' . $value->chapter_name . '</option>';
+            $select  .= '<option value="' . $value['id_chapter'] . '">' . $value['chapter_name'] . '</option>';
         }
 
         $checkbox = '';
-        $allCategory = Model_Book::showCategories();
+        $allCategory = ArticleModel::showCategories();
         foreach ($allCategory as $key => $value) {
-            $checkbox   .= '<option value="' . $value->id_category . '">' . $value->category_name . '</option>';
+            $checkbox   .= '<option value="' . $value['id_category'] . '">' . $value['category_name'] . '</option>';
         }
 
         $InsertSelect = str_replace( '{SELECT}', $select, $templateBA );
@@ -101,7 +102,7 @@ class Article extends Controller
             if ( isset($title, $title_eng, $author, $chapter, $category, $description) ) {
                 $title = $this->sanitizeString($title);
                 $title_eng = $this->sanitizeString($title_eng);
-                $author = $_SESSION['sessionUserData']['id_user'];
+                $id_author = $_SESSION['sessionUserData']['id_user'];
                 $description = $this->sanitizeString($description);
 
                 $chapter = preg_replace('/[+-]/u', '', filter_var($chapter,  FILTER_SANITIZE_NUMBER_INT));
@@ -175,14 +176,14 @@ class Article extends Controller
                     $sql1 = "INSERT INTO articles
                     (`image`, `title`, `title_eng`, `author`, `chapter`, `category`, `description`, `date`)
                     VALUES
-                    ( '$FinalFileName', '$title', '$title_eng', '$author', '$chapter', '$category', '$description', '$dateNow')
+                    ( '$FinalFileName', '$title', '$title_eng', '$id_author', '$chapter', '$category', '$description', '$dateNow')
                     ";
                     $sql2 = "INSERT INTO rating
                     (`id_article`, `rating`, `count_assessments`)
                     VALUES
                     ( LAST_INSERT_ID(), '0', '0')";
                     $db = new Cdb();
-                    $db->transact($sql1, $sql2);
+                    $db->transact([$sql1, $sql2]);
 
                     $success = 'Yes';
                     $textData = 'Книга успешно добавлена!';
@@ -208,8 +209,8 @@ class Article extends Controller
             $this->Not_Found_404();
         }
         $viewBE = new View();
-        $dataBE = Model_Book::showOne($id_BE);
-        return $viewBE->render(ADMIN_TEMPLATES_DIR . '/AJAX/Article_Delete.php', $dataBE);
+        $dataBE = ArticleModel::showOne($id_BE);
+        return $viewBE->render(ADMIN_TEMPLATES_DIR . 'AJAX/Article_Delete.php', $dataBE);
     }
 
     public function actionArticle_Delete(): string
@@ -226,23 +227,23 @@ class Article extends Controller
             }
             else {
                 $id_article = preg_replace('/[+-]/u', '', filter_var($id_article, FILTER_SANITIZE_NUMBER_INT));
-                $dataArticle = Model_Book::showOne($id_article);
-                if ( !$dataArticle ) {
-                    $textData = 'Такой Книги не существует!';
-                }
-                else {
+                $dataArticle = ArticleModel::showOne($id_article);
+                if ( $dataArticle ) {
                     $sql1 = "DELETE FROM articles WHERE id_article=" . $id_article;
                     $sql2 = "DELETE FROM rating WHERE id_article=" . $id_article;
                     $sql3 = "DELETE FROM rating_assessment WHERE id_article=" . $id_article;
                     $db = new Cdb();
-                    $db->transact_3($sql1, $sql2, $sql3);
+                    $db->transact( [$sql1, $sql2, $sql3] );
 
-                    if ($dataArticle[0]->image != 'no_image.png') {
-                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' .  $dataArticle[0]->image);
-                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images_medium/' .  $dataArticle[0]->image);
+                    if ($dataArticle['image'] != 'no_image.png') {
+                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' .  $dataArticle['image']);
+                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images_medium/' .  $dataArticle['image']);
                     }
                     $success = 'Yes';
                     $textData = 'Книга успешно удалена!';
+                }
+                else {
+                    $textData = 'Такой Книги не существует!';
                 }
             }
         }
@@ -250,7 +251,6 @@ class Article extends Controller
             $textData = 'Проблемы работы AJAX';
         }
         $answer = ["success" => $success, "text" => $textData];
-
         return json_encode($answer);
     }
 
@@ -262,11 +262,11 @@ class Article extends Controller
             $this->Not_Found_404();
         }
         $viewBE = new View();
-        $dataBE = Model_Book::showOne($id_BE);
+        $dataBE = ArticleModel::showOne($id_BE);
         $templateBA =  $viewBE->render(ADMIN_TEMPLATES_DIR . '/AJAX/Article_Edit.php', $dataBE);
 
         $select = '';
-        $allChapter = Model_Book::showChapters();
+        $allChapter = ArticleModel::showChapters();
         foreach ($allChapter as $key => $value) {
             $select  .= '<option value="' . $value->id_chapter . '" ';
             if ( $value->id_chapter == $dataBE[0]->chapter ) {
@@ -277,7 +277,7 @@ class Article extends Controller
 
         $CategoryBook = explode(',', $dataBE[0]->category);
         $checkbox = '';
-        $allCategory = Model_Book::showCategories();
+        $allCategory = ArticleModel::showCategories();
         foreach ($allCategory as $key => $value) {
             $checkbox   .= '<option value="' . $value->id_category . '" ';
             if ( in_array($value->id_category,$CategoryBook) ) {
@@ -308,10 +308,10 @@ class Article extends Controller
                 $category = [];
             }
 
-            if ( isset($id_book, $title, $title_eng, $author, $chapter, $category, $description) ) {
+            if ( isset($id_book, $title, $title_eng, $id_author, $chapter, $category, $description) ) {
                 $title = $this->sanitizeString($title);
                 $title_eng = $this->sanitizeString($title_eng);
-                $author = $_SESSION['sessionUserData']['nickname'];
+                $id_author = $_SESSION['sessionUserData']['id_user'];
                 $description = $this->sanitizeString($description);
 
                 $id_book = preg_replace('/[+-]/u', '', filter_var($id_book,  FILTER_SANITIZE_NUMBER_INT));
@@ -323,9 +323,6 @@ class Article extends Controller
                 }
                 elseif ( mb_strlen($title_eng) < 1 OR mb_strlen($title_eng) > 100 ) {
                     $textData = 'Введите Оригинальное название';
-                }
-                elseif ( mb_strlen($author) < 1 OR mb_strlen($author) > 100 ) {
-                    $textData = 'Введите Автора';
                 }
                 elseif ( !is_numeric($chapter) ) {
                     $textData = 'Выберите Раздел';
@@ -345,7 +342,7 @@ class Article extends Controller
                         'id_article' => $id_book,
                         'title' => $title,
                         'title_eng' => $title_eng,
-                        'author' => $author,
+                        'id_author' => $id_author,
                         'chapter' => $chapter,
                         'category' => $category,
                         'description' => $description,
@@ -365,7 +362,7 @@ class Article extends Controller
                             $textData = 'Изображение должно иметь расширение .png, .jpeg, .jpg';
                         }
                         else {
-                            $dataBook = Model_Book::showOne($id_book);
+                            $dataBook = ArticleModel::showOne($id_book);
                             if ( $dataBook[0]->image != 'no_image.png') {
                                 if ( file_exists($_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' .  $dataBook[0]->image) ) {
                                     unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' .  $dataBook[0]->image);
@@ -404,9 +401,9 @@ class Article extends Controller
 
                             $data += [ 'image' => $FinalFileName ];
                             $sql = "UPDATE articles
-                            SET image=:image, title=:title, title_eng=:title_eng, author=:author, chapter=:chapter,
+                                    SET image=:image, title=:title, title_eng=:title_eng, id_author=:id_author, chapter=:chapter,
                                 category=:category, description=:description, date=:date
-                            WHERE id_article=:id_article";
+                                    WHERE id_article=:id_article";
                             $db = new Cdb();
                             $db->execute($sql, $data);
 
@@ -416,9 +413,9 @@ class Article extends Controller
                     }
                     else {
                         $sql = "UPDATE articles
-                            SET title=:title, title_eng=:title_eng, author=:author, chapter=:chapter,
+                                SET title=:title, title_eng=:title_eng, id_author=:id_author, chapter=:chapter,
                                 category=:category, description=:description, date=:date
-                            WHERE id_article=:id_article";
+                                WHERE id_article=:id_article";
                         $db = new Cdb();
                         $db->execute($sql, $data);
 

@@ -24,7 +24,7 @@ class View
     public function display(string $template)
     {
         ob_start();
-        include $template;
+        include $template . '.php';
         $contents = ob_get_contents();
         ob_end_clean();
         return $contents;
@@ -36,25 +36,70 @@ class View
 
         foreach ($data as $articles) {
             $keyArray = [];
-            foreach($articles as $key => $value){
-                $keyArray[ '{' . strtoupper($key) . '}' ] = $value;
+            foreach ($articles as $key => $value) {
+                $keyArray['{' . strtoupper($key) . '}'] = $value;
             }
-            $subject = file_get_contents($template);
+            $subject = file_get_contents($template . '.php');
 
-
-//            echo '<br><br><br><br><br><br>';
-//            preg_match_all('/{[A-Z]+}/', $subject, $lol);
-//            var_dump($lol);
-            //exit();
-
-
-            $search  = array_keys((array)$keyArray);
+            $search = array_keys((array)$keyArray);
             $replace = array_values((array)$articles);
-            echo  str_replace( $search, $replace, $subject );
+//            echo '<BR>SEARCH === <pre>';
+//            var_dump($search);
+//            echo '<BR>REPLACE === <pre>';
+//            var_dump($replace);
+//            echo '<BR>SUBJECT === ';
+            //var_dump($subject);
+            //echo str_replace($search, $replace, $subject);
+            echo str_replace($search, $replace, $subject);
         }
         $contents = ob_get_contents();
         ob_end_clean();
         return $contents;
     }
 
+    public function render_v2(string $template, array $data)
+    {
+        $search = [];
+        $replace = [];
+
+        ob_start();
+        foreach ($data as $key => $value) {
+            $search[] = '{' . strtoupper($key) . '}';
+            $replace[] = $value;
+        }
+
+        $subject = file_get_contents($template . '.php');
+        echo str_replace($search, $replace, $subject);
+
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
+
+
+    public function render_v3(string $template, array $data = [], array $access = []): false|string
+    {
+        $subject = file_get_contents($template . '.php');
+
+        foreach ($access as $key => $value) {
+            if ($value == 1 ) {
+                $subject = preg_replace( '/\[' . $key . '\](.+?)\[\/' . $key . '\]/s', '$1', $subject );
+            } else {
+                $subject = preg_replace( '/\[' . $key . '\](.+?)\[\/' . $key . '\]/s', '', $subject );
+            }
+        }
+
+        $search = [];
+        $replace = [];
+        foreach ($data as $key => $value) {
+            $search[] = '{' . strtoupper($key) . '}';
+            $replace[] = $value;
+        }
+
+        ob_start();
+        echo str_replace($search, $replace, $subject);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
 }

@@ -6,6 +6,10 @@ use App\Cdb;
 
 abstract class Model
 {
-    protected const TABLE = '';
+    public const TABLE = '';
+
+//    public function __construct() {
+//        $Cdb = Cdb::getInstance();
+//    }
 
 }

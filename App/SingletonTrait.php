@@ -7,7 +7,6 @@ trait SingletonTrait
     protected  static ?self $instance = null;
     private function __construct() {}
     private function __clone() {}
-    private function __wakeup() {}
 
     final public static function getInstance(): ?self
     {

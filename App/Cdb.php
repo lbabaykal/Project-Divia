@@ -12,15 +12,31 @@ class Cdb {
     protected string $DB_PASS = 'Another16';
     protected PDO $dbh;
 
-    public function __construct() {
+    use SingletonTrait;
+
+    private function __construct() {
         $this->dbh = new \PDO('mysql:host=' . $this->DB_HOST . ';dbname=' . $this->DB_NAME . ';port=' . $this->DB_PORT . ';charset=utf8mb4', $this->DB_USER , $this->DB_PASS);
     }
 
-    public function query($sql, $class, $params = []): array
+//https://phpdelusions.net/pdo/fetch_modes#FETCH_OBJ
+    public function query($sql, $params = []): array|false
     {
         $sth = $this->dbh->prepare($sql);
         $sth->execute($params);
-        return $sth->fetchAll(\PDO::FETCH_CLASS, $class);
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function queryFetch($sql, $params = []): array|false
+    {
+        $sth = $this->dbh->prepare($sql);
+        $sth->execute($params);
+        return $sth->fetch(\PDO::FETCH_ASSOC);
+    }
+    public function queryFetchAll($sql, $params = []): array|false
+    {
+        $sth = $this->dbh->prepare($sql);
+        $sth->execute($params);
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function execute($sql, $params): bool //Переписать под insert
@@ -41,28 +57,21 @@ class Cdb {
         $sth->execute($array);
     }
 
-
-
-
-    function transact($sql1, $sql2): void
+    function transact(array $arraySql): void
     {
-        $sth = $this->dbh;
-        $sth->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sth->beginTransaction();
-        $sth->exec($sql1);
-        $sth->exec($sql2);
-        $sth->commit();
-    }
-
-    function transact_3($sql1, $sql2, $sql3): void
-    {
-        $sth = $this->dbh;
-        $sth->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sth->beginTransaction();
-        $sth->exec($sql1);
-        $sth->exec($sql2);
-        $sth->exec($sql3);
-        $sth->commit();
+        try {
+            $sth = $this->dbh;
+            $sth->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $sth->beginTransaction();
+            foreach ($arraySql as $value) {
+                $sth->exec($value);
+            }
+            $sth->commit();
+        } catch (\Exception $e) {
+            $sth->rollBack();
+            echo "Error MySQL: " . $e->getMessage();
+            die;
+        }
     }
 
 }

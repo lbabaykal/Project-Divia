@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru-Ru">
 <head>
-    <title>LIBRARY HARMONY</title>
+    <title>{TITLE}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="description" content="{DESCRIPTION}" />
     <meta name="keywords" content="{KEYWORDS}" />
-    <link rel="icon" type="image/png" sizes="256x256" href="/Templates/AnoTheR/images/favicon.png">
-    <link rel="stylesheet" type="text/css" href="/Templates/AnoTheR/css/style.css">
+    <link rel="icon" type="image/png" sizes="256x256" href="{TEMPLATE}/images/favicon.png">
+    <link rel="stylesheet" type="text/css" href="{TEMPLATE}/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
 <body>
 
 <header class="header">
-
     <a  href="/">
         <div class="header-logo">
             <span class="header-logo-left">LIBRARY</span>
@@ -22,12 +21,12 @@
 
     <div class="header-nav">
         <a href="/"><div class="header-nav-items">Главная</div></a>
-        <a href="/chapter?chapter_name_eng=anime"><div class="header-nav-items">Аниме</div></a>
-        <a href="/chapter?chapter_name_eng=manga"><div class="header-nav-items">Манга</div></a>
-        <a href="/chapter?chapter_name_eng=dorams"><div class="header-nav-items">Дорамы</div></a>
+        <a href="/chapter/anime"><div class="header-nav-items">Аниме</div></a>
+        <a href="/chapter/dorams"><div class="header-nav-items">Дорамы</div></a>
+        <a href="/chapter/manga"><div class="header-nav-items">Манга</div></a>
     </div>
 
-    <img id="search-change" class="header-search" src="/Templates/AnoTheR/images/loupe.svg" alt="Search" onclick="">
+    <img id="search-change" class="header-search" src="{TEMPLATE}/images/loupe.svg" alt="Search" onclick="">
         {LOGIN}
     <div id="search-active" class="search" style="display: none;">
         <form action="search" method="GET">
@@ -35,17 +34,23 @@
             <button type="submit">Поиск</button>
         </form>
     </div>
-
 </header>
+
 <div class="modal_authorization"></div>
 <div class="modal_registration"></div>
 <div id="notification"></div>
 
-{CONTENT}
+<section class="content">
+    <div class="content_group">
+        <div class="group_articles">
+            {CONTENT}
+        </div>
+    </div>
+</section>
 
 <footer class="footer">
     <div class="footer_copyright">
-        <span class="copyright_left">COPYRIGHT &copy; 2016 – <?php echo date('Y')?></span>
+        <span class="copyright_left">COPYRIGHT &copy; 2016 – 2023</span>
         <span class="copyright_right">harmony@libharmony.com</span>
     </div>
 
@@ -57,7 +62,7 @@
     </div>
 </footer>
 
-<script type="text/javascript" src="/Templates/AnoTheR/js/JavaScript.js"></script>
+<script type="text/javascript" src="{TEMPLATE}/js/JavaScript.js"></script>
 
 </body>
 </html>

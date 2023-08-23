@@ -4,8 +4,9 @@ namespace App\Controllers;
 
 use App\Cdb;
 use App\Controller;
+use App\Models\CommentsModel;
 
-class Comments extends Controller
+class CommentsController extends Controller
 {
     public function actionComment_Add()
     {
@@ -16,7 +17,8 @@ class Comments extends Controller
 
             if ( isset($comment, $id_article) ) {
                 $comment = $this->sanitizeString($comment);
-                $id_article = preg_replace('/[+-]/u', '', filter_var( $id_article, FILTER_SANITIZE_NUMBER_INT));
+                $id_article = explode('/', $id_article);
+                $id_article = preg_replace('/[+-]/u', '', filter_var( $id_article[2], FILTER_SANITIZE_NUMBER_INT));
                 $id_user = $_SESSION['sessionUserData']['id_user'] ?? false;
 
                 $dateNow = date('d-m-Y h:i');
@@ -36,8 +38,7 @@ class Comments extends Controller
                         'comment' => $comment,
                         'comment_date' => $dateNow,
                     ];
-                    $db = new Cdb;
-                    $db->insert('comments', $data);
+                    CommentsModel::commentAdd($data);
                     $success = 'Yes';
                     $textData = 'Рецензия добавлена!';
                 }

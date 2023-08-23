@@ -4,7 +4,6 @@ namespace App;
 
 class Registry
 {
-
     protected static array $data = [];
 
     public static function setData($key, $value): void
@@ -13,6 +12,13 @@ class Registry
             self::$data[$key] = $value;
         } else {
             throw new \Exception("This {$key} already used.");
+        }
+    }
+
+    public static function setDataArray(array $array): void
+    {
+        foreach ($array as $key => $value) {
+            self::$data[$key] = $value;
         }
     }
 
@@ -27,8 +33,5 @@ class Registry
             unset(self::$data[$key]);
         }
     }
-
-//Registry::set('name', 'lol kek');
-//Registry::get('name');
 
 }

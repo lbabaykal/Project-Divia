@@ -21,7 +21,7 @@
             <div class="info_key">Название:</div><div class="info_value">{TITLE}</div>
             <div class="info_key">Оригинальное название:</div><div class="info_value">{TITLE_ENG}</div>
             <div class="info_key">Категория:</div><div class="info_value">{CATEGORY}</div>
-            <div class="info_key">Автор:</div><div class="info_value">{AUTHOR}</div>
+            <div class="info_key">Автор:</div><div class="info_value">{ID_AUTHOR}</div>
             <div class="info_key">Дата добавления:</div><div class="info_value">{DATE}</div>
             <div class="info_key">Описание: </div><div class="description_value">{DESCRIPTION}</div>
         </div>

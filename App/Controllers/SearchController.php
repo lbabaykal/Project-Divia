@@ -2,10 +2,11 @@
 namespace App\Controllers;
 
 use App\Controller;
+use App\Models\SearchModel;
 use App\View;
 
 
-class Search extends Controller
+class SearchController extends Controller
 {
     public function actionIndex()
     {
@@ -22,7 +23,7 @@ class Search extends Controller
         }
         else {
             $viewSearch = new View();
-            $dataSearch = \App\Models\Search::SearchArticles($SearchSting);
+            $dataSearch = SearchModel::SearchArticles($SearchSting);
 
             if ( count($dataSearch) > 0 ) {
                 $AnsverSearch = $viewSearch->render(TEMPLATES_DIR . 'Short_Article.php', $dataSearch);
@@ -35,7 +36,7 @@ class Search extends Controller
 
         $InsertChapters = str_replace( '{CONTENT}', $InsertAnsverSearch, $TemplateMain );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertChapters );
 
         return $InsertLogin;

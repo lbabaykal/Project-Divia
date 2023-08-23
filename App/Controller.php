@@ -5,7 +5,7 @@ namespace App;
 
 abstract class Controller
 {
-    public function __construct()
+    public function __construct(public $route = [])
     {
 
     }
@@ -13,11 +13,6 @@ abstract class Controller
     public function actionIndex()
     {
         $this->Not_Found_404();
-    }
-
-    public function filterInt(int $number):int
-    {
-        return filter_var($number, FILTER_SANITIZE_NUMBER_INT);
     }
 
 

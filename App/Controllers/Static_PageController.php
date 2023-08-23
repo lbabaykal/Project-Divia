@@ -4,11 +4,11 @@ namespace App\Controllers;
 
 use App\Cdb;
 use App\Controller;
-use App\Models\Static_Page as Model_Static_Page;
+use App\Models\Static_PageModel;
 use App\View;
 
 
-class Static_Page extends Controller
+class Static_PageController extends Controller
 {
     public function actionIndex()
     {
@@ -18,7 +18,7 @@ class Static_Page extends Controller
             $this->Not_Found_404();
         }
 
-        $DataStaticPage = Model_Static_Page::showOneStaticPageNAME($NamePage);
+        $DataStaticPage = Static_PageModel::showOneStaticPageNAME($NamePage);
         if (count($DataStaticPage) == 0) {
             $this->Not_Found_404();
         }
@@ -31,7 +31,7 @@ class Static_Page extends Controller
 
         $Insert_Static_Page = str_replace('{CONTENT}', $template_Static_Page, $data_Main);
 
-        $Login = new Login();
+        $Login = new LoginController();
         $InsertLogin = str_replace('{LOGIN}', $Login::login(), $Insert_Static_Page);
 
         return $InsertLogin;
@@ -95,7 +95,7 @@ class Static_Page extends Controller
             $this->Not_Found_404();
         }
         $viewSP = new View();
-        $dataSP = Model_Static_Page::showOneStaticPage($id_SP);
+        $dataSP = Static_PageModel::showOneStaticPage($id_SP);
         return $viewSP->render(ADMIN_TEMPLATES_DIR . '/AJAX/Static_Page_Edit.php', $dataSP);
     }
 
@@ -155,7 +155,7 @@ class Static_Page extends Controller
             $this->Not_Found_404();
         }
         $viewSP = new View();
-        $dataSP = Model_Static_Page::showOneStaticPage($id_SP);
+        $dataSP = Static_PageModel::showOneStaticPage($id_SP);
         return $viewSP->render(ADMIN_TEMPLATES_DIR . '/AJAX/Static_Page_Delete.php', $dataSP);
     }
 
@@ -175,7 +175,7 @@ class Static_Page extends Controller
 
                 $id_SP = preg_replace('/[+-]/u', '', filter_var($id_SP, FILTER_SANITIZE_NUMBER_INT));
 
-                if ( !Model_Static_Page::showOneStaticPage($id_SP) ) {
+                if ( !Static_PageModel::showOneStaticPage($id_SP) ) {
                     $textData = 'Такой Статической страницы не существует!';
                 }
                 else {

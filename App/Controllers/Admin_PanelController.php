@@ -3,13 +3,13 @@
 namespace App\Controllers;
 
 use App\Controller;
-use App\Models\Static_Page;
-use App\Models\Users;
-use App\Models\Admin_Panel as Model_Admin_Panel;
+use App\Models\Static_PageModel;
+use App\Models\UserModel;
+use App\Models\Admin_PanelModel;
 use App\View;
-use App\Models\Article;
+use App\Models\ArticleModel;
 
-class Admin_Panel extends Controller
+class Admin_PanelController extends Controller
 {
 
     public function actionIndex(): string
@@ -20,9 +20,9 @@ class Admin_Panel extends Controller
         $TemplateAP = $viewAP->display( ADMIN_TEMPLATES_DIR . 'Admin_Panel.php');
 
         $data[0] = [
-            'COUNT_USER' => Model_Admin_Panel::countUser(),
-            'COUNT_BOOKS' => Model_Admin_Panel::countBooks(),
-            'COUNT_COMMENT' => Model_Admin_Panel::countComments(),
+            'COUNT_USER' => Admin_PanelModel::countUser(),
+            'COUNT_BOOKS' => Admin_PanelModel::countBooks(),
+            'COUNT_COMMENT' => Admin_PanelModel::countComments(),
             'COUNT_VISITORS' => 9999
         ];
         $viewAP_Main = new View();
@@ -30,7 +30,7 @@ class Admin_Panel extends Controller
 
         $InsertAdP_Main = str_replace( '{CONTENT}', $TemplateAP_Main, $TemplateAP );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertAdP_Main );
 
         return $InsertLogin;
@@ -40,7 +40,7 @@ class Admin_Panel extends Controller
         $this->CheckAccess();
 
         $viewAdmin_Panel = new View();
-        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_Panel.php');
+        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_PanelController.php');
 
         $viewStatic_Pages = new View();
         $TemplateStatic_Pages =  $viewStatic_Pages->display( ADMIN_TEMPLATES_DIR . 'Users.php');
@@ -48,12 +48,12 @@ class Admin_Panel extends Controller
         $InsertStatic_Page  = str_replace( '{CONTENT}', $TemplateStatic_Pages, $TemplateAdmin_Panel );
 
         $viewStatic_PagesItems = new View();
-        $dataStaticPages = Users::showAllUsers();
+        $dataStaticPages = UserModel::showAllUsers();
         $TemplateStaticPagesItems = $viewStatic_PagesItems->render( ADMIN_TEMPLATES_DIR . 'User_item.php', $dataStaticPages);
 
         $InsertStaticPagesItems  = str_replace( '{STATIC_PAGES_ITEMS}', $TemplateStaticPagesItems, $InsertStatic_Page );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertStaticPagesItems );
 
         return $InsertLogin;
@@ -64,7 +64,7 @@ class Admin_Panel extends Controller
         $this->CheckAccess();
 
         $viewAdmin_Panel = new View();
-        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_Panel.php');
+        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_PanelController.php');
 
         $viewStatic_Pages = new View();
         $TemplateStatic_Pages =  $viewStatic_Pages->display( ADMIN_TEMPLATES_DIR . 'Static_Pages.php');
@@ -72,12 +72,12 @@ class Admin_Panel extends Controller
         $InsertStatic_Page  = str_replace( '{CONTENT}', $TemplateStatic_Pages, $TemplateAdmin_Panel );
 
         $viewStatic_PagesItems = new View();
-        $dataStaticPages = Static_Page::showAllStaticPages();
+        $dataStaticPages = Static_PageModel::showAllStaticPages();
         $TemplateStaticPagesItems = $viewStatic_PagesItems->render( ADMIN_TEMPLATES_DIR . 'Static_Page.php', $dataStaticPages);
 
         $InsertStaticPagesItems  = str_replace( '{STATIC_PAGES_ITEMS}', $TemplateStaticPagesItems, $InsertStatic_Page );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertStaticPagesItems );
 
         return $InsertLogin;
@@ -88,7 +88,7 @@ class Admin_Panel extends Controller
         $this->CheckAccess();
 
         $viewAdmin_Panel = new View();
-        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_Panel.php');
+        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_PanelController.php');
 
         $viewBooks = new View();
         $TemplateBooks =  $viewBooks->display( ADMIN_TEMPLATES_DIR . 'Articles.php');
@@ -96,13 +96,13 @@ class Admin_Panel extends Controller
         $InsertStatic_Page  = str_replace( '{CONTENT}', $TemplateBooks, $TemplateAdmin_Panel );
 
         $viewBooks_Items = new View();
-        $dataBooks = Article::showAll();
+        $dataBooks = ArticleModel::showAll();
 
         $TemplateStaticPagesItems = $viewBooks_Items->render( ADMIN_TEMPLATES_DIR . 'Article_item.php', $dataBooks);
 
         $InsertStaticPagesItems  = str_replace( '{BOOKS_ITEMS}', $TemplateStaticPagesItems, $InsertStatic_Page );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertStaticPagesItems );
 
         return $InsertLogin;

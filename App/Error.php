@@ -42,9 +42,13 @@ class Error
         if ($responce == 0) {
             $responce = 404;
         }
-        //http_response_code($responce);
+        http_response_code($responce);
         if ($responce == 404) {
-            header('Location: /404.php');
+            echo "Тype: {$errno}<br>";
+            echo "Description: {$errstr}<br>";
+            echo "File: {$errfile}<br>";
+            echo "String: {$errline}<br>";
+            //header('Location: /404.php');
         }
         else {
             echo "Тype: {$errno}<br>";

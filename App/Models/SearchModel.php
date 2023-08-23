@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Cdb;
 use App\Model;
 #[\AllowDynamicProperties]
-class Search extends Model
+class SearchModel extends Model
 {
     public static function SearchArticles($sting): array
     {

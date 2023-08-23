@@ -16,7 +16,7 @@ class Router
     {
         $query = urldecode($_SERVER['QUERY_STRING']);
         if (self::searchRoute($query)) {
-            $controller = '\\App\Controllers\\' . self::$route['controller'];
+            $controller = '\\App\Controllers\\' . self::$route['controller'] . 'Controller';
             if (class_exists($controller)) {
                 $controllerObject = new $controller(self::$route);
                 $action = 'action' . self::CamelCase(self::$route['action']);

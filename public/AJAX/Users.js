@@ -73,12 +73,12 @@ function HideModalWindow () {
 }
 
 function ShowAddModalWindow() {
-    $(".modal_windows").load("/Users/Template_User_Add");
+    $(".modal_windows").load("/User/Template_User_Add");
     Modal.classList.toggle("show-modal");
 }
 
 function ShowEditModalWindow($id_user) {
-    $(".modal_windows").load("/Users/Template_User_Edit", { id_user: $id_user });
+    $(".modal_windows").load("/User/Template_User_Edit", { id_user: $id_user });
     Modal.classList.toggle("show-modal");
 }
 

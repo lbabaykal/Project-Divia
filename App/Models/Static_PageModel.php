@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Cdb;
 use App\Model;
 #[\AllowDynamicProperties]
-class Static_Page extends Model
+class Static_PageModel extends Model
 {
 
     public static function showAllStaticPages()

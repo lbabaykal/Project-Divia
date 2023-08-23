@@ -3,10 +3,11 @@
 namespace App\Controllers;
 
 use App\Controller;
-use App\Models\My_Favorites;
+use App\Models\My_FavoritesModel;
+use App\Models\My_ProfileModel;
 use App\View;
 
-class My_Profile extends Controller
+class My_ProfileController extends Controller
 {
 
     public function actionIndex()
@@ -16,12 +17,12 @@ class My_Profile extends Controller
         $template_Main = $view_Main->display(TEMPLATES_DIR . 'Main.php');
 
         $view_My_Profile = new View();
-        $data_My_Profile = \App\Models\My_Profile::showUser_Profile();
+        $data_My_Profile = My_ProfileModel::showUser_Profile();
         $template_My_Profile = $view_My_Profile->render(TEMPLATES_DIR . 'My_Profile.php', $data_My_Profile);
 
         $Ansver = str_replace( '{CONTENT}', $template_My_Profile, $template_Main );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $Ansver = str_replace( '{LOGIN}', $Login::login(), $Ansver );
 
         return $Ansver;
@@ -37,7 +38,7 @@ class My_Profile extends Controller
         $template_My_Favorites = $view_My_Favorites->display(TEMPLATES_DIR . 'My_Favorites.php');
 
         $view_My_Favorites_Item = new View();
-        $data_My_Favorites_Item = My_Favorites::showUser_Favourites();
+        $data_My_Favorites_Item = My_FavoritesModel::showUser_Favourites();
 
         $template_My_Favorites_Item = $view_My_Favorites_Item->render(TEMPLATES_DIR . 'My_Favorites_Item.php', $data_My_Favorites_Item);
 
@@ -45,7 +46,7 @@ class My_Profile extends Controller
 
         $Insert_My_Favorites = str_replace( '{CONTENT}', $Insert_My_Favorites_Item, $template_Main );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $Ansver = str_replace( '{LOGIN}', $Login::login(), $Insert_My_Favorites );
 
         return $Ansver;
@@ -59,7 +60,7 @@ class My_Profile extends Controller
 
         $Insert_My_Books = str_replace( '{CONTENT}', 'SETTINGS', $template_Main );
 
-        $Login = new Login();
+        $Login = new LoginController();
         $Ansver = str_replace( '{LOGIN}', $Login::login(), $Insert_My_Books );
 
         return $Ansver;

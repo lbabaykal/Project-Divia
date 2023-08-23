@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Cdb;
 use App\Model;
 #[\AllowDynamicProperties]
-class Users extends Model
+class UserModel extends Model
 {
 
     public static function showAllUsers()

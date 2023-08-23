@@ -2,14 +2,21 @@
 
 namespace App;
 
+use App\Registry;
+
 class App {
 
-    public static function start() {
+    /**
+     * @var Registry
+     */
+    private static Registry $ConfigSite;
+
+    public static function start(): void
+    {
         new Error;
+        self::setConfigSite();
 
-        $Config = require_once 'Configuration/Config.php';
-
-        define('TEMPLATES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/Templates/' . $Config['Template'] . '/');
+        define('TEMPLATES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/Templates/' . self::getConfigSite('template'));
         define('ADMIN_TEMPLATES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/admin/');
 
         require_once 'Configuration/Routes.php';
@@ -23,18 +30,18 @@ class App {
             > Backup
         */
 
-//$string = "[FIELD_EMAIL]<h1>[VALUE_EMAIL]</h1>[/FIELD_EMAIL]";
-//$field = 'EMAIL';
-//$field_replace = 'trololo@yandex.ru';
-//$string = preg_replace( '/\[FIELD_' . $field . '\](.+?)\[VALUE_' . $field . '\](.+?)\[\/FIELD_' . $field . '\]/', '$1' . $field_replace . '$2', $string );
-//echo $string;
-//exit();
+        Router::dispatcher();
+    }
 
-        /*$lol = require_once 'App/Configuration/Main.php';
-        $lol += ['lol' => 'lol'];
-        var_dump($lol );
-        exit();*/
-        Router::dispatcher(); // запускаем маршрутизатор
+    public static function setConfigSite(): void
+    {
+        self::$ConfigSite = new Registry;
+        self::$ConfigSite::setDataArray(require_once 'Configuration/Config.php');
+    }
+
+    public static function getConfigSite(string $string): string|int|null
+    {
+        return self::$ConfigSite::getData($string);
     }
 
 }

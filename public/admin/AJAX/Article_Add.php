@@ -11,9 +11,6 @@
             <label for="title_eng">Оригинальное название:
             <input id="title_eng" type="text" name="title_eng" required /></label>
 
-            <label for="author">Автор:
-            <input id="author" type="text" name="author" required /></label>
-
             <label>Раздел:
             <select name="chapter">
                 <option value="">--------</option>

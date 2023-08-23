@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Cdb;
 use App\Model;
 #[\AllowDynamicProperties]
-class My_Favorites extends Model
+class My_FavoritesModel extends Model
 {
     public static function showUser_Favourites(): array
     {

@@ -1,6 +1,6 @@
 const Notification = document.querySelector('#notification');
 let url = new URL(document.location.href);
-let url_id_article = url.searchParams.get('id');
+//let url_id_article = url.searchParams.get('id');
 
 $(':radio').click(function () {
     if ($(':radio:checked').length === 1) {
@@ -9,11 +9,11 @@ $(':radio').click(function () {
         const WarningText = document.querySelector('#warning_rating span');
 
         $.ajax({
-            url: '/Rating/Do_Rating',
+            url: '/rating/do_rating',
             method: 'POST',
             dataType: 'json',
             data: { rating: +$("input[name='rating']:checked").val(),
-                    id_article: url_id_article
+                    id_article: url.pathname
                     },
                success: function(data) {
                 let jsonData = JSON.parse(JSON.stringify(data));
@@ -37,10 +37,10 @@ function Do_Favourite() {
     const Favourite = document.querySelector('#favourite');
 
     $.ajax({
-        url: '/My_Favorites/Do_Favourite',
+        url: '/my_favorites/do_favourite',
         method: 'POST',
         dataType: 'json',
-        data: { id_article: url_id_article },
+        data: { id_article: url.pathname },
         success: function (data) {
             let jsonData = JSON.parse(JSON.stringify(data));
             if (jsonData.success === "Yes") {
@@ -73,10 +73,10 @@ function Do_Favourite() {
 function comment_add() {
     let Form = document.getElementById('add_comment');
     let FormReady = new FormData(Form);
-    FormReady.append('id_article', url_id_article);
+    FormReady.append('id_article', url.pathname);
 
     $.ajax({
-        url: '/Comments/Comment_Add',
+        url: '/comments/comment_add',
         method: 'POST',
         dataType: 'json',
         data: FormReady,
@@ -90,7 +90,7 @@ function comment_add() {
                 Notification.innerText = jsonData.text;
                 setTimeout(() => {
                     Notification.classList.remove('notification');
-                    location.href = '/article?id=' + url_id_article;
+                    location.reload();
                 }, 1000);
             }
             if (jsonData.success === "No") {

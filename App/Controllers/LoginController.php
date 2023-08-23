@@ -6,37 +6,20 @@ use App\Cdb;
 use App\Controller;
 use App\Session;
 use App\View;
-use App\Models\Login as Model_Login;
-#[\AllowDynamicProperties]
-class Login extends Controller
+use App\Models\LoginModel;
+
+class LoginController extends Controller
 {
     public static function login()
     {
         if ( isset($_SESSION['sessionUserData']) ) {
-            $Cdb = new Cdb();
-            $sql = "SELECT id_user,nickname,email,user_group,avatar
-                    FROM users 
-                    WHERE id_user=" . $_SESSION['sessionUserData']['id_user'];
-            $dataUser = $Cdb->query($sql, static::class);
-
+            $UserData = LoginModel::getUserData();
             $viewLogin = new View();
-            $templateLogin = $viewLogin->render( TEMPLATES_DIR . 'Login.php', $dataUser);
-
-            if ( $dataUser[0]->user_group == '1' OR $dataUser[0]->user_group == '2' ) {
-                $templateAdmin_link = '<a class="profile-menu-button" href="/Admin_Panel">
-                                        <img src="/Templates/AnoTheR/images/admin.png" alt="">
-                                        <span>Admin_Panel</span>
-                                    </a>';
-                $Answer  = str_replace( '{ADMIN_PANEL}', $templateAdmin_link, $templateLogin );
-                            }
-            else {
-                $Answer  = str_replace( '{ADMIN_PANEL}', '', $templateLogin );
-            }
-            return $Answer;
+            return $viewLogin->render_v3( TEMPLATES_DIR . '/Login', $UserData, ['ADMIN_PANEL' => $UserData['access_AP'], 'AUTHORIZED' => '1', 'NOT_AUTHORIZED' => '0']);
         }
         else {
             $viewLogin = new View();
-            return $viewLogin->display(TEMPLATES_DIR . 'Login_off.php');
+            return $viewLogin->render_v3( TEMPLATES_DIR . '/Login', [], ['AUTHORIZED' => '0', 'NOT_AUTHORIZED' => '1']);
         }
     }
 
@@ -51,7 +34,7 @@ class Login extends Controller
             header('Location: /');
         }
         $viewAuthorization = new View();
-        return $viewAuthorization->display(ADMIN_TEMPLATES_DIR . 'Recovery_Password.php');
+        return $viewAuthorization->display(ADMIN_TEMPLATES_DIR . 'Recovery_Password');
     }
 
     public function actionRecovery_Password() {
@@ -68,14 +51,14 @@ class Login extends Controller
                 if ( !filter_var($email, FILTER_VALIDATE_EMAIL ) ) {
                     $textData = 'Введите корректный Email';
                 }
-                elseif ( !Model_Login::checkEmail($email) ) {
-                    $textData = 'Такой Email не зарегистрирован';
+                elseif ( !LoginModel::checkEmailForExist($email) ) {
+                    $textData = 'Такой Email зарегистрирован';
                 }
                 else {
                     $password = bin2hex(random_bytes(5));
                     $passwordHash = password_hash($password, PASSWORD_BCRYPT );
 
-                    $Cdb = new Cdb();
+                    $Cdb = Cdb::getInstance();
                     $data = [
                         'password' => $passwordHash,
                         'email' => $email
@@ -113,7 +96,7 @@ class Login extends Controller
             header('Location: /');
         }
         $viewAuthorization = new View();
-        return $viewAuthorization->display(ADMIN_TEMPLATES_DIR . 'Authorization.php');
+        return $viewAuthorization->display(ADMIN_TEMPLATES_DIR . 'Authorization');
 
     }
 
@@ -132,23 +115,24 @@ class Login extends Controller
                 elseif ( mb_strlen($password) < 1 ) {
                     $textData = 'Введите Пароль';
                 }
-                elseif ( !Model_Login::checkEmail($email)  ) {
+                elseif ( !LoginModel::checkEmailForExist($email)  ) {
                     $textData = 'Неверный email или пароль';
                 }
                 else {
-                    $Cdb = new Cdb();
+                    $Cdb = Cdb::getInstance();
                     $sql = "SELECT * FROM users WHERE email='$email'";
-                    $UserData = $Cdb->query($sql, static::class);
-                    if ( !password_verify($password, $UserData[0]->password) ) {
+                    $UserData = $Cdb->queryFetch($sql);
+
+                    if ( !password_verify($password, $UserData['password']) ) {
                         $textData = 'Неверный email или пароль';
                     }
                     else {
                         $userData = [
-                            'id_user' => $UserData[0]->id_user,
-                            'nickname' => $UserData[0]->nickname,
-                            'email' => $UserData[0]->email,
-                            'user_group' => $UserData[0]->user_group,
-                            'avatar' => $UserData[0]->avatar
+                            'id_user' => $UserData['id_user'],
+                            'nickname' => $UserData['nickname'],
+                            'email' => $UserData['email'],
+                            'user_group' => $UserData['user_group'],
+                            'avatar' => $UserData['avatar']
                         ];
                         $Session = new Session();
                         $Session->setSession('sessionUserData', $userData);
@@ -175,7 +159,7 @@ class Login extends Controller
             header('Location: /');
         }
         $viewRegistration = new View();
-        return $viewRegistration->display(ADMIN_TEMPLATES_DIR . 'Registration.php');
+        return $viewRegistration->display(ADMIN_TEMPLATES_DIR . 'Registration');
     }
 
 
@@ -201,7 +185,7 @@ class Login extends Controller
                 elseif ( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
                     $textData = 'Введите корректный Email';
                 }
-                elseif ( Model_Login::checkEmail($email) ) {
+                elseif ( LoginModel::checkEmailForExist($email) ) {
                     $textData = 'Email уже зарегистрирован';
                 }
                 elseif ( mb_strlen($password) < 8 )  {
@@ -226,9 +210,8 @@ class Login extends Controller
                         'reg_date' => $dateNow,
                         'avatar' => 'default.jpg'
                     ];
-                    $db = new Cdb;
+                    $db = Cdb::getInstance();
                     $db->insert('users', $data);
-
 
                     $success = 'Yes';
                     $textData = 'Регистрация прошла успешно!';

@@ -4,10 +4,10 @@ namespace App\Controllers;
 
 use App\Cdb;
 use App\Controller;
-use App\Models\Users as Model_User;
+use App\Models\UserModel;
 use App\View;
 
-class Users extends Controller
+class UserController extends Controller
 {
     public function actionTemplate_User_Add(): string
     {
@@ -46,13 +46,13 @@ class Users extends Controller
                 elseif ( mb_strlen($phone) != 11 ) {
                     $textData = 'Введите корректный Номер телефона';
                 }
-                elseif ( Model_User::checkPhone($phone) ) {
+                elseif ( UserModel::checkPhone($phone) ) {
                     $textData = 'Номер телефона уже зарегистрирован';
                 }
                 elseif ( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
                     $textData = 'Введите корректный Email';
                 }
-                elseif ( Model_User::checkEmail($email) ) {
+                elseif ( UserModel::checkEmail($email) ) {
                     $textData = 'Email уже зарегистрирован';
                 }
                 elseif ( mb_strlen($password) < 8 )  {
@@ -105,12 +105,12 @@ class Users extends Controller
             header('Location: /');
         }
         $viewUser_Edit = new View();
-        $dataUser_Edit = Model_User::showOneUser($id_user);
+        $dataUser_Edit = UserModel::showOneUser($id_user);
         $Answer = $viewUser_Edit->render(ADMIN_TEMPLATES_DIR . '/AJAX/User_Edit.php', $dataUser_Edit);
 
         if ( $dataUser_Edit[0]->user_group != '1') {
             $select = '';
-            $AllUser_Group = Model_User::showAllUser_Group();
+            $AllUser_Group = UserModel::showAllUser_Group();
             foreach ($AllUser_Group as $key => $value) {
                 if ( $value->id_group == '1' ) continue;
                 $select  .= '<option value="' . $value->id_group . '" ';
@@ -157,16 +157,16 @@ class Users extends Controller
                 elseif ( mb_strlen($phone) != 11 ) {
                     $textData = 'Введите корректный Номер телефона';
                 }
-                elseif ( Model_User::checkPhone_Update($id_user, $phone) ) {
+                elseif ( UserModel::checkPhone_Update($id_user, $phone) ) {
                     $textData = 'Номер телефона уже зарегистрирован';
                 }
                 elseif ( !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
                     $textData = 'Введите корректный Email';
                 }
-                elseif ( Model_User::checkEmail_Update($id_user, $email) ) {
+                elseif ( UserModel::checkEmail_Update($id_user, $email) ) {
                     $textData = 'Email уже зарегистрирован';
                 }
-                elseif ( !Model_User::checkUser_Group($user_group) ) {
+                elseif ( !UserModel::checkUser_Group($user_group) ) {
                     $textData = 'Такой Группы пользователей не существует!';
                 }
                 else {
