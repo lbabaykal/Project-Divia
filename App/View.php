@@ -57,7 +57,7 @@ class View
         return $contents;
     }
 
-    public function render_v2(string $template, array $data)
+    public function render_v2(string $template, array $data): false|string
     {
         $search = [];
         $replace = [];
@@ -83,9 +83,9 @@ class View
 
         foreach ($access as $key => $value) {
             if ($value == 1 ) {
-                $subject = preg_replace( '/\[' . $key . '\](.+?)\[\/' . $key . '\]/s', '$1', $subject );
+                $subject = preg_replace( '/\[' . $key . '](.+?)\[\/' . $key . ']/s', '$1', $subject );
             } else {
-                $subject = preg_replace( '/\[' . $key . '\](.+?)\[\/' . $key . '\]/s', '', $subject );
+                $subject = preg_replace( '/\[' . $key . '](.+?)\[\/' . $key . ']/s', '', $subject );
             }
         }
 

@@ -406,7 +406,7 @@ body {
     align-items: center;
     width: 1200px;
     min-height: calc(100vh - 221px);
-    margin: 80px auto 0 auto;
+    margin: auto;
 }
 
 .article_full {

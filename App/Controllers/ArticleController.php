@@ -2,62 +2,52 @@
 
 namespace App\Controllers;
 
+use App\App;
 use App\Cdb;
 use App\Controller;
 use App\View;
-use App\Models\CommentsModel;
 use App\Models\ArticleModel;
 
 class ArticleController extends Controller
 {
     public function actionIndex()
     {
-        $id_article = $this->route['slug'];
+        $id_article = $this->route['id_article'];
 
-        if (ArticleModel::checkIdBook($id_article)) {
-
-            $viewMain = new View();
-            $TemplateMain = $viewMain->display(TEMPLATES_DIR . 'Main.php');
-
-            $viewBook = new View();
-            $dataBook = ArticleModel::showOne($id_article);
-
-            $TemplateBook = $viewBook->render(TEMPLATES_DIR . 'Full_Article.php', $dataBook);
-
-            $dataRating = RatingController::showRating($id_article);
-            $InsertRating = str_replace( '{RATING_ARTICLE}', $dataRating, $TemplateBook );
-
-            $My_Favorites = new My_FavoritesController();
-            $InsertMy_List = str_replace( '{MY_LIST}', $My_Favorites::checkFavourite($id_article), $InsertRating );
-
-            $InsertContent = str_replace( '{CONTENT}', $InsertMy_List, $TemplateMain );
-
-            $viewComments = new View();
-            $dataComments = CommentsModel::showComments($id_article);
-            $TemplateComments = $viewComments->render(TEMPLATES_DIR . 'Comment.php', $dataComments);
-
-
-            $Answer = str_replace( '{COMMENTS}', $TemplateComments, $InsertContent );
-
-            $viewAdd_Comment = new View();
-            $dataAdd_Comment = $viewAdd_Comment->display( TEMPLATES_DIR . 'Add_Comment.php');
-
-            if ( !isset($_SESSION['sessionUserData']) ) {
-                $Answer = str_replace( '{ADD_COMMENT}', '', $Answer );
-            }
-            else {
-                $Answer = str_replace( '{ADD_COMMENT}', $dataAdd_Comment, $Answer );
-            }
-
-            $Login = new LoginController();
-            $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $Answer );
-
-            return $InsertLogin;
-
-        } else {
+        $dataArticle = ArticleModel::dataArticle($id_article);
+        if (!$dataArticle) {
             return $this->Not_Found_404();
         }
+
+        $templateRating = RatingController::showRating($id_article, $dataArticle['allow_rating']);
+        $templateMy_Favorite = FavoritesController::checkFavouriteUser($id_article);
+        $templateComments = CommentsController::showComments($id_article, $dataArticle['allow_comment']);
+        $dataArticle += [
+            'RATING_ARTICLE'=> $templateRating,
+            'FAVOURITE_ARTICLE'=> $templateMy_Favorite,
+            'COMMENTS_ARTICLE'=> $templateComments,
+//            'ADD_COMMENT'=> $templateMy_Favorite,
+        ];
+        $TemplateFull_Article =(new View)->render_v3(TEMPLATES_DIR . '/Full_Article', $dataArticle);
+
+        $dataMain = [
+            'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataArticle['title'] . '☘︎',
+            'description'=> $this->limitatDesc($dataArticle['description']),
+            'template'=> App::getConfigSite('dir_template'),
+            'login'=> LoginController::login(),
+            'CONTENT'=> $TemplateFull_Article,
+        ];
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $dataMain, []);
     }
+
+
+
+
+
+
+
+
+
 
     public function actionTemplate_Article_Add(): string
     {
@@ -153,7 +143,7 @@ class ArticleController extends Controller
                                 mkdir( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images_medium/' . date('Y-m'), 0700);
                             }
 
-                            $newFileName = bin2hex(random_bytes(5)) . '.' . $expansionFile;
+                            $newFileName = bin2hex(random_bytes(6)) . '.' . $expansionFile;
                             $FinalFileName = date('Y-m') . '/' . $newFileName;
                             $uploadDIR = $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' . $FinalFileName;
                             $uploadDIRMedium = $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images_medium/'  . $FinalFileName;
@@ -182,8 +172,8 @@ class ArticleController extends Controller
                     (`id_article`, `rating`, `count_assessments`)
                     VALUES
                     ( LAST_INSERT_ID(), '0', '0')";
-                    $db = new Cdb();
-                    $db->transact([$sql1, $sql2]);
+                    $Cdb = Cdb::getInstance();
+                    $Cdb->transact([$sql1, $sql2]);
 
                     $success = 'Yes';
                     $textData = 'Книга успешно добавлена!';
@@ -198,59 +188,6 @@ class ArticleController extends Controller
         }
         $answer = [ "success" => $success, "text" => $textData ];
 
-        return json_encode($answer);
-    }
-
-    public function actionTemplate_Article_Delete()
-    {
-        $this->CheckAccess();
-        $id_BE = filter_var($_POST['id_article'], FILTER_SANITIZE_NUMBER_INT);
-        if (!is_numeric($id_BE)) {
-            $this->Not_Found_404();
-        }
-        $viewBE = new View();
-        $dataBE = ArticleModel::showOne($id_BE);
-        return $viewBE->render(ADMIN_TEMPLATES_DIR . 'AJAX/Article_Delete.php', $dataBE);
-    }
-
-    public function actionArticle_Delete(): string
-    {
-        $this->CheckAccess();
-
-        $answer['success'] = $success = 'No';
-
-        if (!empty($_POST)) {
-            extract($_POST, EXTR_SKIP);
-
-            if ( !isset($id_article) ) {
-                $textData = 'Проблемы с отправленными данными';
-            }
-            else {
-                $id_article = preg_replace('/[+-]/u', '', filter_var($id_article, FILTER_SANITIZE_NUMBER_INT));
-                $dataArticle = ArticleModel::showOne($id_article);
-                if ( $dataArticle ) {
-                    $sql1 = "DELETE FROM articles WHERE id_article=" . $id_article;
-                    $sql2 = "DELETE FROM rating WHERE id_article=" . $id_article;
-                    $sql3 = "DELETE FROM rating_assessment WHERE id_article=" . $id_article;
-                    $db = new Cdb();
-                    $db->transact( [$sql1, $sql2, $sql3] );
-
-                    if ($dataArticle['image'] != 'no_image.png') {
-                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' .  $dataArticle['image']);
-                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images_medium/' .  $dataArticle['image']);
-                    }
-                    $success = 'Yes';
-                    $textData = 'Книга успешно удалена!';
-                }
-                else {
-                    $textData = 'Такой Книги не существует!';
-                }
-            }
-        }
-        else {
-            $textData = 'Проблемы работы AJAX';
-        }
-        $answer = ["success" => $success, "text" => $textData];
         return json_encode($answer);
     }
 
@@ -404,8 +341,8 @@ class ArticleController extends Controller
                                     SET image=:image, title=:title, title_eng=:title_eng, id_author=:id_author, chapter=:chapter,
                                 category=:category, description=:description, date=:date
                                     WHERE id_article=:id_article";
-                            $db = new Cdb();
-                            $db->execute($sql, $data);
+                            $Cdb = Cdb::getInstance();
+                            $Cdb->execute($sql, $data);
 
                             $success = 'Yes';
                             $textData = 'Книга успешно обновлена!';
@@ -416,8 +353,8 @@ class ArticleController extends Controller
                                 SET title=:title, title_eng=:title_eng, id_author=:id_author, chapter=:chapter,
                                 category=:category, description=:description, date=:date
                                 WHERE id_article=:id_article";
-                        $db = new Cdb();
-                        $db->execute($sql, $data);
+                        $Cdb = Cdb::getInstance();
+                        $Cdb->execute($sql, $data);
 
                         $success = 'Yes';
                         $textData = 'Книга успешно обновлена!';
@@ -433,6 +370,59 @@ class ArticleController extends Controller
         }
         $answer = [ "success" => $success, "text" => $textData ];
 
+        return json_encode($answer);
+    }
+
+    public function actionTemplate_Article_Delete()
+    {
+        $this->CheckAccess();
+        $id_BE = filter_var($_POST['id_article'], FILTER_SANITIZE_NUMBER_INT);
+        if (!is_numeric($id_BE)) {
+            $this->Not_Found_404();
+        }
+        $viewBE = new View();
+        $dataBE = ArticleModel::showOne($id_BE);
+        return $viewBE->render(ADMIN_TEMPLATES_DIR . 'AJAX/Article_Delete.php', $dataBE);
+    }
+
+    public function actionArticle_Delete(): string
+    {
+        $this->CheckAccess();
+
+        $answer['success'] = $success = 'No';
+
+        if (!empty($_POST)) {
+            extract($_POST, EXTR_SKIP);
+
+            if ( !isset($id_article) ) {
+                $textData = 'Проблемы с отправленными данными';
+            }
+            else {
+                $id_article = preg_replace('/[+-]/u', '', filter_var($id_article, FILTER_SANITIZE_NUMBER_INT));
+                $dataArticle = ArticleModel::showOne($id_article);
+                if ( $dataArticle ) {
+                    $sql1 = "DELETE FROM articles WHERE id_article=" . $id_article;
+                    $sql2 = "DELETE FROM rating WHERE id_article=" . $id_article;
+                    $sql3 = "DELETE FROM rating_assessment WHERE id_article=" . $id_article;
+                    $Cdb = Cdb::getInstance();
+                    $Cdb->transact( [$sql1, $sql2, $sql3] );
+
+                    if ($dataArticle['image'] != 'no_image.png') {
+                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images/' .  $dataArticle['image']);
+                        unlink( $_SERVER["DOCUMENT_ROOT"] . '/images/articles_images_medium/' .  $dataArticle['image']);
+                    }
+                    $success = 'Yes';
+                    $textData = 'Книга успешно удалена!';
+                }
+                else {
+                    $textData = 'Такой Книги не существует!';
+                }
+            }
+        }
+        else {
+            $textData = 'Проблемы работы AJAX';
+        }
+        $answer = ["success" => $success, "text" => $textData];
         return json_encode($answer);
     }
 

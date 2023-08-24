@@ -1,5 +1,4 @@
 <section class="content_article">
-
     <div class="article_full">
         <div class="article_image">
             <img src="/images/articles_images/{IMAGE}" alt="">
@@ -9,7 +8,7 @@
                     <button class="my_list_button">Добавить в список <sup style="font-size: 12px">test</sup></button>
                 </div>
                 <div class="favourite">
-                    <button onclick="Do_Favourite()" id="favourite" class="favourite_button {MY_LIST}"></button>
+                    <button onclick="Do_Favourite()" id="favourite" class="favourite_button {FAVOURITE_ARTICLE}"></button>
                 </div>
             </div>
 
@@ -34,12 +33,12 @@
             </div>
     </div>
 
-    <div class="comments_cont">
-        <div class="comments_title">РЕЦЕНЗИИ:</div>
-        {COMMENTS}
-    </div>
 
-    {ADD_COMMENT}
+    {COMMENTS_ARTICLE}
+
+    [ADD_COMMENTS]
+        {ADD_COMMENT}
+    [/ADD_COMMENTS]
 
     <script type="text/javascript" src="/AJAX/Full_Article.js"></script>
 </section>

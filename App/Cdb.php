@@ -18,20 +18,13 @@ class Cdb {
         $this->dbh = new \PDO('mysql:host=' . $this->DB_HOST . ';dbname=' . $this->DB_NAME . ';port=' . $this->DB_PORT . ';charset=utf8mb4', $this->DB_USER , $this->DB_PASS);
     }
 
-//https://phpdelusions.net/pdo/fetch_modes#FETCH_OBJ
-    public function query($sql, $params = []): array|false
+    public function queryFetch($sql): array|false
     {
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function queryFetch($sql, $params = []): array|false
-    {
-        $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
+        $sth->execute();
         return $sth->fetch(\PDO::FETCH_ASSOC);
     }
+
     public function queryFetchAll($sql, $params = []): array|false
     {
         $sth = $this->dbh->prepare($sql);
@@ -39,22 +32,35 @@ class Cdb {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function execute($sql, $params): bool //Переписать под insert
+    public function insert($name_table, $data): void
     {
+        $array_keys = array_keys($data);
+        $keys =  ':' . implode(',:',  $array_keys);
+        $sql = "INSERT INTO $name_table (" . implode(',', $array_keys) . ") VALUES ($keys)";
         $sth = $this->dbh->prepare($sql);
-        return $sth->execute($params);
+        $sth->execute($data);
     }
 
-    //$DBH->prepare("INSERT INTO folks (name, addr, city) values (:name, :addr, :city)");
-    public function insert( $name_table, $array): void
+    public function update($name_table, $data): void
     {
-        $array_keys = array_keys($array);
+        $array_keys = array_keys($data);
         $keys =  ':' . implode(',:',  $array_keys);
 
         $sql = "INSERT INTO $name_table (" . implode(',', $array_keys) . ") VALUES ($keys)";
 
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($array);
+        $sth->execute($data);
+    }
+
+    public function delete( $name_table, $data): void
+    {
+        $KeyArray = [];
+        foreach (array_keys($data) as $key) {
+            $KeyArray[] .= $key . '=:' . $key;
+        }
+        $sql = "DELETE FROM $name_table WHERE " . implode(' AND ', $KeyArray);
+        $sth = $this->dbh->prepare($sql);
+        $sth->execute($data);
     }
 
     function transact(array $arraySql): void
@@ -72,6 +78,22 @@ class Cdb {
             echo "Error MySQL: " . $e->getMessage();
             die;
         }
+    }
+
+
+
+    //https://phpdelusions.net/pdo/fetch_modes#FETCH_OBJ
+    public function query($sql, $params = []): array|false
+    {
+        $sth = $this->dbh->prepare($sql);
+        $sth->execute($params);
+        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function execute($sql, $params): bool //Переписать под insert
+    {
+        $sth = $this->dbh->prepare($sql);
+        return $sth->execute($params);
     }
 
 }

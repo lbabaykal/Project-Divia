@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 abstract class Controller
 {
     public function __construct(public $route = [])
@@ -17,7 +16,9 @@ abstract class Controller
 
 
 
-
+    public function limitatDesc(string $string) {
+        return mb_strimwidth($string, 0, 145, "...");
+    }
 
 
 

@@ -5,10 +5,53 @@ namespace App\Controllers;
 use App\Cdb;
 use App\Controller;
 use App\Models\UserModel;
+use App\Session;
 use App\View;
 
 class UserController extends Controller
 {
+    private static array $data = [];
+    private static bool $status = false;
+
+    public static function getStatus(): bool
+    {
+        return self::$status;
+    }
+
+    public static function setStatus(bool $status): void
+    {
+        self::$status = $status;
+    }
+
+    public static function getData(): array
+    {
+        return self::$data;
+    }
+
+    public static function getDataField(string $name): int|string
+    {
+        return self::$data[$name];
+    }
+
+    public static function setData(array $data): void
+    {
+        self::$data = $data;
+    }
+
+    public function getUserData(): void
+    {
+        if (Session::checkSession('UserData')) {
+            $dataUser = UserModel::getUserDataDB();
+            self::setData($dataUser);
+            self::setStatus(true);
+        }
+    }
+
+
+
+
+
+
     public function actionTemplate_User_Add(): string
     {
         $this->CheckAccess();

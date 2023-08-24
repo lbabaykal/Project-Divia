@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Controllers\UserController;
 use App\Registry;
 
 class App {
@@ -21,6 +22,7 @@ class App {
 
         require_once 'Configuration/Routes.php';
         session_start();
+        (new UserController)->getUserData();
 
         /*
             > аутентификацию

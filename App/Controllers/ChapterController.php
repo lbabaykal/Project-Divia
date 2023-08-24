@@ -21,19 +21,19 @@ class ChapterController extends Controller
 
         $DataMain = [
             'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataChapter['chapter_name'] . '☘︎',
-            'description'=> $dataChapter['description'],
+            'description'=> $this->limitatDesc($dataChapter['description']),
             'template'=> App::getConfigSite('dir_template'),
             'login'=> LoginController::login(),
             'CONTENT'=> $templateChapter,
         ];
 
-        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain, []);
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain);
     }
 
     public function actionPage() {
         $chapter_name = $this->route['chapter_name'];
         $chapter_page = $this->route['page'];
-
-        return 'PAGE - ' . $chapter_page;
+        return "Chapter - {$chapter_name}<br> Page - {$chapter_page}";
     }
+
 }

@@ -4,13 +4,19 @@ namespace App;
 
 class Session
 {
+
+    public static function checkSession(string $name): bool
+    {
+        return isset($_SESSION[$name]);
+    }
+
     public function setSession(string $name, array $array): void
     {
         //session_regenerate_id();
         $_SESSION[$name] = $array;
     }
 
-    public function destroySession(): void
+    public static function destroySession(): void
     {
         session_destroy();
     }
@@ -19,5 +25,4 @@ class Session
     {
         unset($_SESSION[$name]);
     }
-
 }

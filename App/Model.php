@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Cdb;
-
 abstract class Model
 {
     public const TABLE = '';
@@ -11,5 +9,6 @@ abstract class Model
 //    public function __construct() {
 //        $Cdb = Cdb::getInstance();
 //    }
+
 
 }

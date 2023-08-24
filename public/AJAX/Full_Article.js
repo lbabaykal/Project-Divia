@@ -21,7 +21,7 @@ $(':radio').click(function () {
                     Warning.classList.remove('warning__RED');
                     Warning.classList.add('warning__GREEN');
                     WarningText.innerText = jsonData.text;
-                    setTimeout(() => { location.reload(); }, 2000);
+                    setTimeout(() => { Warning.classList.remove('warning__GREEN'); }, 2000);
                 }
                 if (jsonData.success === "No") {
                     Warning.classList.add('warning__RED');
@@ -37,7 +37,7 @@ function Do_Favourite() {
     const Favourite = document.querySelector('#favourite');
 
     $.ajax({
-        url: '/my_favorites/do_favourite',
+        url: '/favorites/do_favourite',
         method: 'POST',
         dataType: 'json',
         data: { id_article: url.pathname },

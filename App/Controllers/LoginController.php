@@ -12,7 +12,7 @@ class LoginController extends Controller
 {
     public static function login()
     {
-        if ( isset($_SESSION['sessionUserData']) ) {
+        if ( UserController::getStatus() ) {
             $UserData = LoginModel::getUserData();
             $viewLogin = new View();
             return $viewLogin->render_v3( TEMPLATES_DIR . '/Login', $UserData, ['ADMIN_PANEL' => $UserData['access_AP'], 'AUTHORIZED' => '1', 'NOT_AUTHORIZED' => '0']);
@@ -23,6 +23,11 @@ class LoginController extends Controller
         }
     }
 
+
+
+
+
+
     public function actionLogout() {
         $Session = new Session();
         $Session->destroySession();
@@ -30,7 +35,7 @@ class LoginController extends Controller
     }
 
     public function actionTemplate_Recovery_Password() {
-        if (isset($_SESSION['sessionUserData'])) {
+        if (isset($_SESSION['UserData'])) {
             header('Location: /');
         }
         $viewAuthorization = new View();
@@ -120,7 +125,7 @@ class LoginController extends Controller
                 }
                 else {
                     $Cdb = Cdb::getInstance();
-                    $sql = "SELECT * FROM users WHERE email='$email'";
+                    $sql = "SELECT * FROM users WHERE email='{$email}'";
                     $UserData = $Cdb->queryFetch($sql);
 
                     if ( !password_verify($password, $UserData['password']) ) {
@@ -134,8 +139,7 @@ class LoginController extends Controller
                             'user_group' => $UserData['user_group'],
                             'avatar' => $UserData['avatar']
                         ];
-                        $Session = new Session();
-                        $Session->setSession('sessionUserData', $userData);
+                        (new Session)->setSession('UserData', $userData);
                         $success = 'Yes';
                         $textData = 'Авторизация прошла успешно!';
                     }

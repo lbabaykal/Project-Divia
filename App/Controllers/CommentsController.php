@@ -2,12 +2,23 @@
 
 namespace App\Controllers;
 
-use App\Cdb;
+
 use App\Controller;
 use App\Models\CommentsModel;
+use App\View;
 
 class CommentsController extends Controller
 {
+    public static function showComments(int $id_article, int $status): string
+    {
+        return (new View)->render_v3(TEMPLATES_DIR . '/Comment', CommentsModel::getComments($id_article), ['COMMENTS' => $status]);
+    }
+
+
+
+
+
+
     public function actionComment_Add()
     {
         $answer['success'] = $success = 'No';

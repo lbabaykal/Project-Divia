@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Controller;
-use App\Models\My_FavoritesModel;
+use App\Models\_FavoritesModel;
 use App\Models\My_ProfileModel;
 use App\View;
 
@@ -38,7 +38,7 @@ class My_ProfileController extends Controller
         $template_My_Favorites = $view_My_Favorites->display(TEMPLATES_DIR . 'My_Favorites.php');
 
         $view_My_Favorites_Item = new View();
-        $data_My_Favorites_Item = My_FavoritesModel::showUser_Favourites();
+        $data_My_Favorites_Item = _FavoritesModel::showUser_Favourites();
 
         $template_My_Favorites_Item = $view_My_Favorites_Item->render(TEMPLATES_DIR . 'My_Favorites_Item.php', $data_My_Favorites_Item);
 

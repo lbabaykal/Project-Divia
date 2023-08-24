@@ -3,19 +3,21 @@
 namespace App\Models;
 
 use App\Cdb;
+use App\Controllers\UserController;
 use App\Model;
 
 class LoginModel extends Model
 {
     public static function getUserData(): array|false
     {
+        $id_user = UserController::getDataField('id_user');
         $Cdb = Cdb::getInstance();
         $sql = "SELECT users.id_user, users.nickname, users.birthday, users.phone, users.email, 
                         users.subscription, users.user_group, users.reg_date, users.avatar, user_group.*
                 FROM users
                 INNER JOIN user_group 
                 ON users.user_group = user_group.id_group 
-                WHERE id_user=" . $_SESSION['sessionUserData']['id_user'];
+                WHERE id_user={$id_user}";
         return $Cdb->queryFetch($sql);
     }
 
