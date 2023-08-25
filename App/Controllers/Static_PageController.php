@@ -7,12 +7,10 @@ use App\Controller;
 use App\Models\Static_PageModel;
 use App\View;
 
-
 class Static_PageController extends Controller
 {
     public function actionIndex()
     {
-
         $NamePage = htmlspecialchars(strip_tags(trim($_GET['name_page'])));
         if ($NamePage == '') {
             $this->Not_Found_404();
@@ -36,6 +34,14 @@ class Static_PageController extends Controller
 
         return $InsertLogin;
     }
+
+
+
+
+
+
+
+
 
     public function actionTemplate_Static_Page_Add(): string
     {

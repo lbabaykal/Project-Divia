@@ -21,7 +21,7 @@ class ChapterController extends Controller
 
         $DataMain = [
             'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataChapter['chapter_name'] . '☘︎',
-            'description'=> $this->limitatDesc($dataChapter['description']),
+            'description'=> $this->limitterDesc($dataChapter['description']),
             'template'=> App::getConfigSite('dir_template'),
             'login'=> LoginController::login(),
             'CONTENT'=> $templateChapter,

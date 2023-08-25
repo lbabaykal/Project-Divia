@@ -28,13 +28,15 @@
 
     <div class="comments_cont">
         <div class="comments_title">РЕКОМЕНДАЦИИ:</div>
-            <div class="recommendations">
-                {RECOMMENDATIONS}
-            </div>
+        <div class="recommendations">
+            {RECOMMENDATIONS}
+        </div>
     </div>
 
-
-    {COMMENTS_ARTICLE}
+    <div class="comments_cont">
+        <div class="comments_title">КОММЕНТАРИИ:</div>
+        {COMMENTS_ARTICLE}
+    </div>
 
     [ADD_COMMENTS]
         {ADD_COMMENT}

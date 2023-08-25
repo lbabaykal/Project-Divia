@@ -14,7 +14,7 @@ class MainController extends Controller
     {
         $DataMain = [
             'title' => '🌸' . App::getConfigSite('site_name') . '🌸',
-            'description' => $this->limitatDesc(App::getConfigSite('site_description')),
+            'description' => $this->limitterDesc(App::getConfigSite('site_description')),
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()
         ];

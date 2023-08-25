@@ -11,38 +11,43 @@ class CommentsController extends Controller
 {
     public static function showComments(int $id_article, int $status): string
     {
-        return (new View)->render_v3(TEMPLATES_DIR . '/Comment', CommentsModel::getComments($id_article), ['COMMENTS' => $status]);
+        if ($status) {
+            $dataComments = CommentsModel::getComments($id_article);
+            return $dataComments ? (new View)->render(TEMPLATES_DIR . '/Comment', $dataComments) : 'Комментариев нет, будь первым!';
+        } else {
+            return 'Комментарии для данной статьи отключены.';
+        }
     }
 
-
-
-
-
-
-    public function actionComment_Add()
+    public static function showAddComments(): string
     {
-        $answer['success'] = $success = 'No';
+            return (new View)->render_v3(TEMPLATES_DIR . '/Add_Comment');
+    }
 
-        if ( !empty($_POST) ) {
+    public function actionComment_Add(): string
+    {
+        $answer = ['success' => 'No'];
+
+        if (!empty($_POST)) {
             extract($_POST, EXTR_SKIP);
 
-            if ( isset($comment, $id_article) ) {
+            if (isset($comment, $id_article)) {
                 $comment = $this->sanitizeString($comment);
                 $id_article = explode('/', $id_article);
-                $id_article = preg_replace('/[+-]/u', '', filter_var( $id_article[2], FILTER_SANITIZE_NUMBER_INT));
-                $id_user = $_SESSION['sessionUserData']['id_user'] ?? false;
+                $id_article = preg_replace('/[+-]/u', '', filter_var($id_article[2], FILTER_SANITIZE_NUMBER_INT));
+                $id_user = UserController::getDataField('id_user');
 
                 $dateNow = date('d-m-Y h:i');
-                if ( $id_user === false )  {
-                    $textData = 'Необходимо авторизоваться!';
+                if (!$id_user) {
+                    $answer['text'] = 'Необходимо авторизоваться!';
+                    return json_encode($answer);
                 }
-                elseif ( mb_strlen($comment) < 10 )  {
-                    $textData = 'Рецензия слишком короткая!';
-                }
-                elseif ( mb_strlen($comment) > 3000 )  {
-                    $textData = 'Рецензия слишком длинная!';
-                }
-                else {
+
+                if (mb_strlen($comment) < 10) {
+                    $answer['text'] = 'Комментарий слишком короткий!';
+                } elseif (mb_strlen($comment) > 3000) {
+                    $answer['text'] = 'Комментарий слишком длинный!';
+                } else {
                     $data = [
                         'id_article' => $id_article,
                         'id_user' => $id_user,
@@ -50,20 +55,16 @@ class CommentsController extends Controller
                         'comment_date' => $dateNow,
                     ];
                     CommentsModel::commentAdd($data);
-                    $success = 'Yes';
-                    $textData = 'Рецензия добавлена!';
+                    $answer['success'] = 'Yes';
+                    $answer['text'] = 'Комментарий успешно добавлен!';
                 }
+            } else {
+                $answer['text'] = 'Проблемы с отправленными данными.';
             }
-            else {
-                $textData = 'Проблемы с отправленными данными';
-            }
+        } else {
+            $answer['text'] = 'Проблемы работы AJAX.';
         }
-        else {
-            $textData = 'Проблемы работы AJAX';
-        }
-        $answer = [ "success" => $success, "text" => $textData ];
-
-        echo json_encode($answer);
+        return json_encode($answer);
     }
 
 }

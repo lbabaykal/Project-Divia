@@ -18,9 +18,7 @@ class FavoritesController extends Controller
 
     public function actionDo_Favourite(): string
     {
-        $answer = [
-            'success' => 'No',
-        ];
+        $answer = [ 'success' => 'No'];
 
         if (!empty($_POST)) {
             extract($_POST, EXTR_SKIP);

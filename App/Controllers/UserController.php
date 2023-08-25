@@ -42,8 +42,13 @@ class UserController extends Controller
     {
         if (Session::checkSession('UserData')) {
             $dataUser = UserModel::getUserDataDB();
-            self::setData($dataUser);
-            self::setStatus(true);
+            if ($dataUser === false) {
+                Session::destroySession();
+                header('Location: /');
+            } else {
+                self::setData($dataUser);
+                self::setStatus(true);
+            }
         }
     }
 
@@ -122,8 +127,8 @@ class UserController extends Controller
                         'reg_date' => $dateNow,
                         'avatar' => 'default.jpg'
                     ];
-                    $db = new Cdb;
-                    $db->insert('users', $data);
+                    $Cdb = Cdb::getInstance();
+                    $Cdb->insert('users', $data);
 
                     $success = 'Yes';
                     $textData = 'Регистрация прошла успешно!';
@@ -222,7 +227,7 @@ class UserController extends Controller
                         'email' => $email,
                         'user_group' => $user_group
                     ];
-                    $db = new Cdb;
+                    $Cdb = Cdb::getInstance();
                     $sql = "UPDATE users
                             SET nickname=:nickname, birthday=:birthday, phone=:phone, email=:email, user_group=:user_group
                             WHERE id_user=:id_user";

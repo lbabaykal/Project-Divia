@@ -1,34 +1,19 @@
-<!DOCTYPE html >
-<html lang="ru-Ru">
-<head>
-    <title>{TITLE}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="description" content="{DESCRIPTION}" />
-    <meta name="keywords" content="{KEYWORDS}" />
-    <link rel="icon" type="image/png" sizes="256x256" href="/admin/images/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/admin/css/admin.css">
-</head>
-<body>
-
-<div class="limiter">
-    <div class="forms_block">
-        <span>Восстановление пароля</span>
-        <div class="forms_cont">
-            <div id="warning"></div>
+<div class="modal_window_content">
+    <div class="authorization_left">
+        <div class="authorization_container">
+            <span>Восстановление пароля</span>
+            <div id="warning_rp">&nbsp;</div>
             <form id="recovery_password" method="POST" onsubmit="return false" autocomplete="off">
-                <label for="email">Email:</label>
                 <input id="email" type="email" name="email" placeholder="example@gmail.com" required>
-
-                <button onclick="Recovery_Password()" type="submit">Восстановить</button>
+                <button onclick="Recovery_Password()" class="button button_auth">Восстановить пароль</button>
             </form>
         </div>
     </div>
+    <div class="authorization_right">
+        <img onclick="HideRecovery_Password()" src="/admin/images/cancel.png" class="window_close" alt="Закрыть">
+        <div class="authorization_container">
+            <img src="/admin/images/moonlight.png" style="width: 80%;margin: 0 auto;">
+        </div>
+    </div>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script type="text/javascript" src="/AJAX/Recovery_Password.js"></script>
-
-
-</body>
-</html>

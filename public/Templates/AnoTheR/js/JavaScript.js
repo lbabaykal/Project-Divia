@@ -1,5 +1,6 @@
 const Modal_Authorization = document.querySelector('.modal_authorization');
 const Modal_Registration = document.querySelector('.modal_registration');
+const Modal_Recovery_Password = document.querySelector('.modal_recovery_password');
 
 
 function HideAuthorization() {
@@ -8,6 +9,10 @@ function HideAuthorization() {
 
 function HideRegistration() {
 	Modal_Registration.classList.toggle("show-modal");
+}
+
+function HideRecovery_Password() {
+	Modal_Recovery_Password.classList.toggle("show-modal");
 }
 
 function ShowAuthorization() {
@@ -19,6 +24,12 @@ function ShowRegistration() {
 	Modal_Authorization.classList.toggle("show-modal");
 	$(".modal_registration").load("/Login/TemplateRegistration");
 	Modal_Registration.classList.toggle("show-modal");
+}
+
+function ShowRecovery_Password() {
+	Modal_Authorization.classList.toggle("show-modal");
+	$(".modal_recovery_password").load("/Login/TemplateRecoveryPassword");
+	Modal_Recovery_Password.classList.toggle("show-modal");
 }
 
 let header = $('.header'),
@@ -41,14 +52,3 @@ $('#menu-change').on("click", function(){
 $('#search-change').on("click", function(){
 	$('#search-active').toggle();
 });
-
-
-
-
-
-
-
-
-
-
-

@@ -32,7 +32,7 @@ class Cdb {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function insert($name_table, $data): void
+    public function insert(string $name_table, $data): void
     {
         $array_keys = array_keys($data);
         $keys =  ':' . implode(',:',  $array_keys);
@@ -41,13 +41,19 @@ class Cdb {
         $sth->execute($data);
     }
 
-    public function update($name_table, $data): void
+    public function update(string $name_table, array $dataSet, array $dataWhere): void
     {
-        $array_keys = array_keys($data);
-        $keys =  ':' . implode(',:',  $array_keys);
+        $ArraySet = [];
+        $ArrayWhere = [];
+        $data = array_merge($dataSet, $dataWhere);
+        foreach (array_keys($dataSet) as $key) {
+            $ArraySet[] = $key . '=:' . $key;
+        }
+        foreach (array_keys($dataWhere) as $key) {
+            $ArrayWhere[] = $key . '=:' . $key;
 
-        $sql = "INSERT INTO $name_table (" . implode(',', $array_keys) . ") VALUES ($keys)";
-
+        }
+        $sql = "UPDATE $name_table SET " . implode(', ', $ArraySet) . " WHERE " . implode(' AND ', $ArrayWhere);
         $sth = $this->dbh->prepare($sql);
         $sth->execute($data);
     }

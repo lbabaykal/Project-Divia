@@ -21,7 +21,7 @@ class View
         return isset($this->data[$name]);
     }
 
-    public function display(string $template)
+    public function display(string $template): false|string
     {
         ob_start();
         include $template . '.php';
@@ -30,7 +30,7 @@ class View
         return $contents;
     }
 
-    public function render(string $template, array $data = [])
+    public function render(string $template, array $data = []): false|string
     {
         ob_start();
 

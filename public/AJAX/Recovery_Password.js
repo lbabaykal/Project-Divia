@@ -1,6 +1,6 @@
 function Recovery_Password() {
+    const formWarning = document.querySelector('#warning_rp');
     let Form = document.getElementById('recovery_password');
-    const formWarning = document.querySelector('#warning');
     $.ajax({
         url: '/Login/Recovery_Password',
         method: 'POST',
@@ -15,7 +15,7 @@ function Recovery_Password() {
                 formWarning.innerText = jsonData.text;
                 setTimeout(() => {
                     location.href = '/';
-                }, 1000);
+                }, 5000);
             }
             if (jsonData.success === "No")
             {

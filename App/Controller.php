@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Controllers\UserController;
+
 abstract class Controller
 {
     public function __construct(public $route = [])
@@ -14,12 +16,29 @@ abstract class Controller
         $this->Not_Found_404();
     }
 
-
-
-    public function limitatDesc(string $string) {
+    public function limitterDesc(string $string): string
+    {
         return mb_strimwidth($string, 0, 145, "...");
     }
 
+    public function CheckAccess(): void
+    {
+        if ( !UserController::getDataField('access_admin') ) {
+            $this->Not_Found_404();
+        }
+    }
+
+    public function CheckUser(): void
+    {
+        if (!UserController::getStatus()) {
+            header('Location: /');
+        }
+    }
+
+    public function Not_Found_404(): void
+    {
+        header('Location: /404.php');
+    }
 
 
 
@@ -28,24 +47,5 @@ abstract class Controller
         $string = trim($string); //Убирает пробелы
         $string = strip_tags($string); //Убирает html теги
         return htmlspecialchars($string); // Преобразует специальные символы в HTML-сущности
-    }
-
-    public function CheckAccess(): void
-    {
-        if ( ($_SESSION['sessionUserData']['user_group'] != '1' AND $_SESSION['sessionUserData']['user_group'] != '2' ) OR !isset($_SESSION['sessionUserData'])) {
-            $this->Not_Found_404();
-        }
-    }
-
-    public function CheckUser(): void
-    {
-        if ( !isset($_SESSION['sessionUserData']) ) {
-            header('Location: /');
-        }
-    }
-
-    public function Not_Found_404(): void
-    {
-        header('Location: /404.php');
     }
 }

@@ -8,7 +8,7 @@ use App\Model;
 class UserModel extends Model
 {
 
-    public static function getUserDataDB(): array
+    public static function getUserDataDB(): array|false
     {
         $id_user = $_SESSION['UserData']['id_user'];
         $Cdb = Cdb::getInstance();

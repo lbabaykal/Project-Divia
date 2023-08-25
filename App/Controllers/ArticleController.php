@@ -22,22 +22,28 @@ class ArticleController extends Controller
         $templateRating = RatingController::showRating($id_article, $dataArticle['allow_rating']);
         $templateMy_Favorite = FavoritesController::checkFavouriteUser($id_article);
         $templateComments = CommentsController::showComments($id_article, $dataArticle['allow_comment']);
+        $templateAdd_Comment = CommentsController::showAddComments();
         $dataArticle += [
             'RATING_ARTICLE'=> $templateRating,
             'FAVOURITE_ARTICLE'=> $templateMy_Favorite,
             'COMMENTS_ARTICLE'=> $templateComments,
-//            'ADD_COMMENT'=> $templateMy_Favorite,
+            'ADD_COMMENT'=> $templateAdd_Comment,
         ];
-        $TemplateFull_Article =(new View)->render_v3(TEMPLATES_DIR . '/Full_Article', $dataArticle);
+
+        $dataArticleNo = [
+            'ADD_COMMENTS'=> UserController::getStatus() && $dataArticle['allow_comment'],
+        ];
+
+        $TemplateFull_Article =(new View)->render_v3(TEMPLATES_DIR . '/Full_Article', $dataArticle, $dataArticleNo);
 
         $dataMain = [
             'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataArticle['title'] . '☘︎',
-            'description'=> $this->limitatDesc($dataArticle['description']),
+            'description'=> $this->limitterDesc($dataArticle['description']),
             'template'=> App::getConfigSite('dir_template'),
             'login'=> LoginController::login(),
             'CONTENT'=> $TemplateFull_Article,
         ];
-        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $dataMain, []);
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $dataMain);
     }
 
 

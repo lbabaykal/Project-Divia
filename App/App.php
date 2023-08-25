@@ -18,7 +18,7 @@ class App {
         self::setConfigSite();
 
         define('TEMPLATES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/Templates/' . self::getConfigSite('template'));
-        define('ADMIN_TEMPLATES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/admin/');
+        define('ADMIN_TEMPLATES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/admin');
 
         require_once 'Configuration/Routes.php';
         session_start();

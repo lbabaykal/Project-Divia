@@ -38,6 +38,7 @@
 
 <div class="modal_authorization"></div>
 <div class="modal_registration"></div>
+<div class="modal_recovery_password"></div>
 <div id="notification"></div>
 
 <section class="content">

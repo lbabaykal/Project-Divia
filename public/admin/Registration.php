@@ -1,7 +1,7 @@
 <div class="modal_window_content">
     <div class="authorization_right">
         <div class="authorization_container">
-            <img src="/admin/images/book_logo.png">
+            <img src="/admin/images/community.png" style="width: 80%;margin: 0 auto;">
         </div>
     </div>
     <div class="authorization_left">
