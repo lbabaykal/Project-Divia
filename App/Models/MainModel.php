@@ -33,7 +33,7 @@ class MainModel extends Model
                     ON articles.id_article = rating.id_article                
                 WHERE articles.show_article=1
                 ORDER BY articles.id_article
-                DESC LIMIT " . App::getConfigSite('count_article_chapter');
+                DESC LIMIT " . App::getConfigSite('count_article_all');
         return $Cdb->queryFetchAll($sql);
     }
 

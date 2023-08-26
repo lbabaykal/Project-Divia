@@ -14,7 +14,7 @@
                 <input id="email" type="email" name="email" placeholder="E-mail" required>
                 <input id="password" type="password" name="password" autocomplete="off" placeholder="Пароль" required>
                 <input id="password-repeat" type="password" name="password_repeat" placeholder="Повторите пароль" autocomplete="off" required>
-                <a href="/static_page?name_page=Privacy_Policy">✓ Политика конфиденциальности</a>
+                <a href="/static_page/privacy_policy">✓ Политика конфиденциальности</a>
                 <button onclick="Registration()" class="button button_auth">Зарегистрироваться</button>
             </form>
         </div>

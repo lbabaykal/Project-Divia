@@ -32,24 +32,18 @@ class View
 
     public function render(string $template, array $data = []): false|string
     {
+        $subject = file_get_contents($template . '.php');
+
         ob_start();
-
         foreach ($data as $articles) {
-            $keyArray = [];
-            foreach ($articles as $key => $value) {
-                $keyArray['{' . strtoupper($key) . '}'] = $value;
-            }
-            $subject = file_get_contents($template . '.php');
+            $search = [];
+            $replace = [];
 
-            $search = array_keys((array)$keyArray);
-            $replace = array_values((array)$articles);
-//            echo '<BR>SEARCH === <pre>';
-//            var_dump($search);
-//            echo '<BR>REPLACE === <pre>';
-//            var_dump($replace);
-//            echo '<BR>SUBJECT === ';
-            //var_dump($subject);
-            //echo str_replace($search, $replace, $subject);
+            foreach ($articles as $key => $value) {
+                $search[] = '{' . strtoupper($key) . '}';
+                $replace[] = $value;
+            }
+
             echo str_replace($search, $replace, $subject);
         }
         $contents = ob_get_contents();

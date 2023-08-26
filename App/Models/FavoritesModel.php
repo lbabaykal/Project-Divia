@@ -42,14 +42,7 @@ class FavoritesModel extends Model
         return $Cdb->insert('favourites', $data);
     }
 
-
-
-
-
-
-
-
-    public static function showUser_Favourites(): array
+    public static function getFavouritesUser(string $nameChapter): array
     {
         $id_user = UserController::getDataField('id_user');
         $Cdb = Cdb::getInstance();
@@ -61,11 +54,11 @@ class FavoritesModel extends Model
                 ON favourites.id_article = rating.id_article
                 INNER JOIN chapter
                 ON articles.chapter = chapter.id_chapter
-                WHERE favourites.id_user='$id_user'
+                WHERE favourites.id_user = {$id_user}
+                AND chapter.chapter_name_eng = '{$nameChapter}'
                 ORDER BY favourites.id_favourites ASC
         ";
         return $Cdb->query($sql);
     }
-
 
 }

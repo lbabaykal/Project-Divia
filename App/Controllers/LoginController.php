@@ -180,7 +180,7 @@ class LoginController extends Controller
                         'email' => $email,
                         'password' => $passwordHash,
                         'subscription' => 'default',
-                        'user_group' => '3',
+                        'user_group' => '4',
                         'reg_date' => $dateNow
                     ];
                     LoginModel::registrationUser($data);

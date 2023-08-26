@@ -7,7 +7,7 @@
     <meta name="keywords" content="{KEYWORDS}" />
     <link rel="icon" type="image/png" sizes="256x256" href="{TEMPLATE}/images/favicon.png">
     <link rel="stylesheet" type="text/css" href="{TEMPLATE}/css/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="{TEMPLATE}/js/jquery-3.7.0.min.js"></script>
 </head>
 <body>
 
@@ -29,7 +29,7 @@
     <img id="search-change" class="header-search" src="{TEMPLATE}/images/loupe.svg" alt="Search" onclick="">
         {LOGIN}
     <div id="search-active" class="search" style="display: none;">
-        <form action="search" method="GET">
+        <form action="/search" method="GET">
             <input type="text" name="search" />
             <button type="submit">Поиск</button>
         </form>
@@ -56,10 +56,10 @@
     </div>
 
     <div class="footer_links">
-        <a href="">Политика конфиденциальности</a>
-        <a href="">Пользовательское соглашение</a>
-        <a href="">Правовая информация</a>
-        <a href="">Контакты</a>
+        <a href="/static_page/privacy_policy">Политика конфиденциальности</a>
+        <a href="/static_page/site_rules">Пользовательское соглашение</a>
+        <a href="/static_page/legal_information">Правовая информация</a>
+        <a href="/static_page/contacts">Контакты</a>
     </div>
 </footer>
 

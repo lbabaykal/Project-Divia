@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\App;
 use App\Cdb;
 use App\Controller;
 use App\Models\Static_PageModel;
@@ -11,28 +12,25 @@ class Static_PageController extends Controller
 {
     public function actionIndex()
     {
-        $NamePage = htmlspecialchars(strip_tags(trim($_GET['name_page'])));
-        if ($NamePage == '') {
+        $NamePage =  $this->route['name'];
+        $DataStaticPage = Static_PageModel::getStaticPage($NamePage);
+        if (!$DataStaticPage) {
             $this->Not_Found_404();
         }
 
-        $DataStaticPage = Static_PageModel::showOneStaticPageNAME($NamePage);
-        if (count($DataStaticPage) == 0) {
-            $this->Not_Found_404();
-        }
+        $DataMain = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . $DataStaticPage['name'] . '📜︎',
+            'description' => $this->limitterDesc($DataStaticPage['description']),
+            'template'=> App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
 
-        $view_Main = new View();
-        $data_Main = $view_Main->display(TEMPLATES_DIR . 'Main.php');
+        $templateStatic_Page = (new View)->render_v3(TEMPLATES_DIR . '/Static_Page', $DataStaticPage);
+        $DataMain += [
+            'CONTENT' => $templateStatic_Page
+        ];
 
-        $view_Static_Page = new View();
-        $template_Static_Page = $view_Static_Page->render(TEMPLATES_DIR . 'Static_Page.php', $DataStaticPage);
-
-        $Insert_Static_Page = str_replace('{CONTENT}', $template_Static_Page, $data_Main);
-
-        $Login = new LoginController();
-        $InsertLogin = str_replace('{LOGIN}', $Login::login(), $Insert_Static_Page);
-
-        return $InsertLogin;
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain);
     }
 
 
@@ -79,8 +77,8 @@ class Static_PageController extends Controller
                         'name_eng' => $name_eng,
                         'description' => $description,
                     ];
-                    $db = new Cdb;
-                    $db->insert('static_page', $data);
+                    $Cdb = Cdb::getInstance();
+                    $Cdb->insert('static_page', $data);
                     $success = 'Yes';
                     $textData = 'Статическая страница успешно добавлена!';
                 }
@@ -136,11 +134,11 @@ class Static_PageController extends Controller
                         'name_eng' => $name_eng,
                         'description' => $description,
                     ];
-                    $db = new Cdb;
+                    $Cdb = Cdb::getInstance();
                     $sql = "UPDATE static_page
                             SET name=:name, name_eng=:name_eng, description=:description
                             WHERE id_static_page=:id_static_page";
-                    $db->execute($sql, $data);
+                    $Cdb->execute($sql, $data);
                     $success = 'Yes';
                     $textData = 'Статическая страница успешно изменена!';
                 }
@@ -188,8 +186,8 @@ class Static_PageController extends Controller
                     $sql = "DELETE FROM static_page 
                             WHERE id_static_page=?
                     ";
-                    $db = new Cdb;
-                    $db->execute($sql, [$id_SP]);
+                    $Cdb = Cdb::getInstance();
+                    $Cdb->execute($sql, [$id_SP]);
                     $success = 'Yes';
                     $textData = 'Статическая страница успешно удалена!';
                 }

@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
+use App\App;
 use App\Controller;
-use App\Models\_FavoritesModel;
-use App\Models\My_ProfileModel;
+use App\Models\FavoritesModel;
 use App\View;
 
 class My_ProfileController extends Controller
@@ -13,58 +13,67 @@ class My_ProfileController extends Controller
     public function actionIndex()
     {
         $this->CheckUser();
-        $view_Main = new View();
-        $template_Main = $view_Main->display(TEMPLATES_DIR . 'Main.php');
+        $dataUser = UserController::getData();
 
-        $view_My_Profile = new View();
-        $data_My_Profile = My_ProfileModel::showUser_Profile();
-        $template_My_Profile = $view_My_Profile->render(TEMPLATES_DIR . 'My_Profile.php', $data_My_Profile);
+        $DataMain = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . $dataUser['nickname'] . '🍓',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
 
-        $Ansver = str_replace( '{CONTENT}', $template_My_Profile, $template_Main );
+        $templateShortArticle = (new View)->render_v3(TEMPLATES_DIR . '/My_Profile', $dataUser);
 
-        $Login = new LoginController();
-        $Ansver = str_replace( '{LOGIN}', $Login::login(), $Ansver );
-
-        return $Ansver;
+        $DataMain += [
+            'CONTENT' => $templateShortArticle
+        ];
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain);
     }
 
-    public function actionMy_Favorites()
+    public function actionMy_Favorites(): false|string
     {
         $this->CheckUser();
-        $view_Main = new View();
-        $template_Main = $view_Main->display(TEMPLATES_DIR . 'Main.php');
+        $dataUser = UserController::getData();
+        $DataMain = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Избранное' . '💖︎',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
 
-        $view_My_Favorites = new View();
-        $template_My_Favorites = $view_My_Favorites->display(TEMPLATES_DIR . 'My_Favorites.php');
+        $templateFavoritesAnime = (new View)->render(TEMPLATES_DIR . '/My_Favorites_Item', FavoritesModel::getFavouritesUser('anime'));
+        $templateFavoritesDorams = (new View)->render(TEMPLATES_DIR . '/My_Favorites_Item', FavoritesModel::getFavouritesUser('dorams'));
+        $templateFavoritesManga = (new View)->render(TEMPLATES_DIR . '/My_Favorites_Item', FavoritesModel::getFavouritesUser('manga'));
+        $templateMy_Favorites = (new View)->render_v3(TEMPLATES_DIR . '/My_Favorites', $dataUser);
 
-        $view_My_Favorites_Item = new View();
-        $data_My_Favorites_Item = _FavoritesModel::showUser_Favourites();
-
-        $template_My_Favorites_Item = $view_My_Favorites_Item->render(TEMPLATES_DIR . 'My_Favorites_Item.php', $data_My_Favorites_Item);
-
-        $Insert_My_Favorites_Item = str_replace( '{MY_FAVOURITE_ITEMS}', $template_My_Favorites_Item,  $template_My_Favorites);
-
-        $Insert_My_Favorites = str_replace( '{CONTENT}', $Insert_My_Favorites_Item, $template_Main );
-
-        $Login = new LoginController();
-        $Ansver = str_replace( '{LOGIN}', $Login::login(), $Insert_My_Favorites );
-
-        return $Ansver;
+        $DataMain += [
+            'CONTENT' => $templateMy_Favorites,
+            'FAVOURITES_ANIME' => $templateFavoritesAnime,
+            'FAVOURITES_MANGA' => $templateFavoritesManga,
+            'FAVOURITES_DORAMS' => $templateFavoritesDorams
+        ];
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain);
     }
 
-    public function actionSettings()
+    public function actionSettings(): false|string
     {
         $this->CheckUser();
-        $view_Main = new View();
-        $template_Main = $view_Main->display(TEMPLATES_DIR . 'Main.php');
+        $dataUser = UserController::getData();
 
-        $Insert_My_Books = str_replace( '{CONTENT}', 'SETTINGS', $template_Main );
+        $DataMain = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Настройки' . '⚙🛠',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
 
-        $Login = new LoginController();
-        $Ansver = str_replace( '{LOGIN}', $Login::login(), $Insert_My_Books );
+        $templateMy_Favorites = (new View)->render_v3(TEMPLATES_DIR . '/My_Settings', $dataUser);
 
-        return $Ansver;
+        $DataMain += [
+            'CONTENT' => $templateMy_Favorites,
+
+        ];
+        return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain);
     }
-
 
 }

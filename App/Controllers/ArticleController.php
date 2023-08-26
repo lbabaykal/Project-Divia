@@ -37,7 +37,7 @@ class ArticleController extends Controller
         $TemplateFull_Article =(new View)->render_v3(TEMPLATES_DIR . '/Full_Article', $dataArticle, $dataArticleNo);
 
         $dataMain = [
-            'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataArticle['title'] . '☘︎',
+            'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataArticle['title'] . '🔥︎',
             'description'=> $this->limitterDesc($dataArticle['description']),
             'template'=> App::getConfigSite('dir_template'),
             'login'=> LoginController::login(),

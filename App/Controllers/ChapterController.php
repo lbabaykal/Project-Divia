@@ -26,7 +26,6 @@ class ChapterController extends Controller
             'login'=> LoginController::login(),
             'CONTENT'=> $templateChapter,
         ];
-
         return (new View)->render_v3(TEMPLATES_DIR . '/Main', $DataMain);
     }
 

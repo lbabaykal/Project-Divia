@@ -18,7 +18,7 @@ class ChapterModel
                 WHERE chapter_name_eng='{$chapter_name}'
                 AND articles.show_article=1
                 ORDER BY articles.id_article
-                DESC LIMIT " . App::getConfigSite('count_article_chapter');
+                DESC LIMIT " . App::getConfigSite('count_article_all');
         return $Cdb->queryFetchAll($sql);
     }
 
