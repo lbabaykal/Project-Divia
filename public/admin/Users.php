@@ -1,7 +1,7 @@
 <div class="static_page_cont">
     <div class="static_page_head">
         <div class="static_page_title">Список пользователей</div>
-        <div onclick="ShowAddModalWindow()" class="static_page_add_new">+ Зарегистрировать читателя</div>
+        <div onclick="ShowAddModalWindow()" class="static_page_add_new">+ Добавить пользователя</div>
     </div>
     <div class="static_page_content">
         <table id="Users_Page" class="flat-table table-bordered table-hover dt-responsive">
@@ -17,7 +17,7 @@
             </tr>
             </thead>
             <tbody>
-            {STATIC_PAGES_ITEMS}
+            {USER_ITEMS}
             </tbody>
         </table>
     </div>

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use App\App;
 use App\Cdb;
+use App\Model;
 
-class ChapterModel
+class ChapterModel extends Model
 {
+    public const TABLE = 'chapter';
+
     public static function showArticlesChapter($chapter_name): array
     {
         $Cdb = Cdb::getInstance();
@@ -25,7 +28,7 @@ class ChapterModel
     public static function dataChapter($chapter_name)
     {
         $Cdb = Cdb::getInstance();
-        $sql = "SELECT * FROM chapter WHERE chapter_name_eng='{$chapter_name}'";
+        $sql = "SELECT * FROM " . self::TABLE . " WHERE chapter_name_eng='{$chapter_name}'";
         return $Cdb->queryFetch($sql);
     }
 }

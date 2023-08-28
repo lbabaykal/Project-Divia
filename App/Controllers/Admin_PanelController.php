@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\App;
 use App\Controller;
 use App\Models\Static_PageModel;
 use App\Models\UserModel;
@@ -16,97 +17,92 @@ class Admin_PanelController extends Controller
     {
         $this->CheckAccess();
 
-        $viewAP = new View();
-        $TemplateAP = $viewAP->display( ADMIN_TEMPLATES_DIR . 'Admin_Panel.php');
-
-        $data[0] = [
-            'COUNT_USER' => Admin_PanelModel::countUser(),
-            'COUNT_BOOKS' => Admin_PanelModel::countBooks(),
-            'COUNT_COMMENT' => Admin_PanelModel::countComments(),
-            'COUNT_VISITORS' => 9999
+        $DataAdmin = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
         ];
-        $viewAP_Main = new View();
-        $TemplateAP_Main = $viewAP_Main->render( ADMIN_TEMPLATES_DIR . 'Admin_Main.php', $data );
 
-        $InsertAdP_Main = str_replace( '{CONTENT}', $TemplateAP_Main, $TemplateAP );
+        $DataMainAdmin = [
+            'COUNT_USER' => Admin_PanelModel::countUser(),
+            'COUNT_BOOKS' => Admin_PanelModel::countArticles(),
+            'COUNT_COMMENT' => Admin_PanelModel::countComments(),
+            'COUNT_VISITORS' => 9999,
+        ];
+        $templateAdmin_Panel = (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Admin_Main', $DataMainAdmin);
+        $DataAdmin += [
+            'CONTENT' => $templateAdmin_Panel
+        ];
 
-        $Login = new LoginController();
-        $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertAdP_Main );
-
-        return $InsertLogin;
+        return (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Admin_Panel', $DataAdmin);
     }
 
     public function actionUsers():string {
         $this->CheckAccess();
 
-        $viewAdmin_Panel = new View();
-        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_PanelController.php');
+        $DataAdmin = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel - Пользователи',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
 
-        $viewStatic_Pages = new View();
-        $TemplateStatic_Pages =  $viewStatic_Pages->display( ADMIN_TEMPLATES_DIR . 'Users.php');
 
-        $InsertStatic_Page  = str_replace( '{CONTENT}', $TemplateStatic_Pages, $TemplateAdmin_Panel );
+        $DataAP_Users = [
+            'USER_ITEMS' => (new View)->render(ADMIN_TEMPLATES_DIR . '/User_item', UserModel::getAllUsers())
+        ];
 
-        $viewStatic_PagesItems = new View();
-        $dataStaticPages = UserModel::showAllUsers();
-        $TemplateStaticPagesItems = $viewStatic_PagesItems->render( ADMIN_TEMPLATES_DIR . 'User_item.php', $dataStaticPages);
+        $templateAP_User = (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Users', $DataAP_Users);
+        $DataAdmin += [
+            'CONTENT' => $templateAP_User
+        ];
 
-        $InsertStaticPagesItems  = str_replace( '{STATIC_PAGES_ITEMS}', $TemplateStaticPagesItems, $InsertStatic_Page );
-
-        $Login = new LoginController();
-        $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertStaticPagesItems );
-
-        return $InsertLogin;
-    }
-
-    public function actionStatic_Pages(): string
-    {
-        $this->CheckAccess();
-
-        $viewAdmin_Panel = new View();
-        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_PanelController.php');
-
-        $viewStatic_Pages = new View();
-        $TemplateStatic_Pages =  $viewStatic_Pages->display( ADMIN_TEMPLATES_DIR . 'Static_Pages.php');
-
-        $InsertStatic_Page  = str_replace( '{CONTENT}', $TemplateStatic_Pages, $TemplateAdmin_Panel );
-
-        $viewStatic_PagesItems = new View();
-        $dataStaticPages = Static_PageModel::showAllStaticPages();
-        $TemplateStaticPagesItems = $viewStatic_PagesItems->render( ADMIN_TEMPLATES_DIR . 'Static_Page.php', $dataStaticPages);
-
-        $InsertStaticPagesItems  = str_replace( '{STATIC_PAGES_ITEMS}', $TemplateStaticPagesItems, $InsertStatic_Page );
-
-        $Login = new LoginController();
-        $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertStaticPagesItems );
-
-        return $InsertLogin;
+        return (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Admin_Panel', $DataAdmin);
     }
 
     public function actionArticles(): string
     {
         $this->CheckAccess();
 
-        $viewAdmin_Panel = new View();
-        $TemplateAdmin_Panel = $viewAdmin_Panel->display( ADMIN_TEMPLATES_DIR . 'Admin_PanelController.php');
+        $DataAdmin = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel - Статьи',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
 
-        $viewBooks = new View();
-        $TemplateBooks =  $viewBooks->display( ADMIN_TEMPLATES_DIR . 'Articles.php');
+        $DataAP_Articles = [
+            'ARTICLES_ITEMS' => (new View)->render(ADMIN_TEMPLATES_DIR . '/Article_item', ArticleModel::getAllArticles())
+        ];
 
-        $InsertStatic_Page  = str_replace( '{CONTENT}', $TemplateBooks, $TemplateAdmin_Panel );
-
-        $viewBooks_Items = new View();
-        $dataBooks = ArticleModel::showAll();
-
-        $TemplateStaticPagesItems = $viewBooks_Items->render( ADMIN_TEMPLATES_DIR . 'Article_item.php', $dataBooks);
-
-        $InsertStaticPagesItems  = str_replace( '{BOOKS_ITEMS}', $TemplateStaticPagesItems, $InsertStatic_Page );
-
-        $Login = new LoginController();
-        $InsertLogin = str_replace( '{LOGIN}', $Login::login(), $InsertStaticPagesItems );
-
-        return $InsertLogin;
+        $templateAP_User = (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Articles', $DataAP_Articles);
+        $DataAdmin += [
+            'CONTENT' => $templateAP_User
+        ];
+        return (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Admin_Panel', $DataAdmin);
     }
 
+    public function actionStatic_Pages(): string
+    {
+        $this->CheckAccess();
+
+        $DataAdmin = [
+            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel - Статические страницы',
+            'description' => '',
+            'template' => App::getConfigSite('dir_template'),
+            'login' => LoginController::login()
+        ];
+
+        $DataAP_Articles = [
+            'STATIC_PAGES_ITEMS' => (new View)->render(ADMIN_TEMPLATES_DIR . '/Static_Pages_Items', Static_PageModel::getAllStaticPages())
+        ];
+
+        $templateAP_User = (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Static_Pages', $DataAP_Articles);
+        $DataAdmin += [
+            'CONTENT' => $templateAP_User
+        ];
+        return (new View)->render_v3(ADMIN_TEMPLATES_DIR . '/Admin_Panel', $DataAdmin);
+    }
 
 }

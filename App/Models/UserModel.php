@@ -20,10 +20,7 @@ class UserModel extends Model
         return $Cdb->queryFetch($sql);
     }
 
-
-
-
-    public static function showAllUsers()
+    public static function getAllUsers(): false|array
     {
         $Cdb = Cdb::getInstance();
         $sql = "SELECT *
@@ -32,8 +29,13 @@ class UserModel extends Model
                 ON users.user_group = user_group.id_group
                 WHERE 1
         ";
-        return $Cdb->query($sql, static::class);
+        return $Cdb->queryFetchAll($sql);
     }
+
+
+
+
+
 
     public static function showOneUser($id_user)
     {

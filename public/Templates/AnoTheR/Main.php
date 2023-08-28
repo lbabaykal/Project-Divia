@@ -14,7 +14,7 @@
 <header class="header">
     <a  href="/">
         <div class="header-logo">
-            <span class="header-logo-left">LIBRARY</span>
+            <span class="header-logo-left">MOON</span>
             <span class="header-logo-right">HARMONY</span>
         </div>
     </a>

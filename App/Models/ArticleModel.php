@@ -7,29 +7,31 @@ use App\Model;
 
 class ArticleModel extends Model
 {
+    public const TABLE = 'articles';
 
-    public static function dataArticle($id_article): array
+    public static function getDataArticle($id_article): array
     {
         $Cdb = Cdb::getInstance();
-        $sql = "SELECT * FROM articles WHERE id_article={$id_article}";
+        $sql = "SELECT * FROM " . self::TABLE . " WHERE id_article={$id_article}";
         return $Cdb->queryFetch($sql);
     }
 
-
-
-
-
-
-    public static function showAll(): array
+    public static function getAllArticles(): array
     {
         $Cdb = Cdb::getInstance();
-        $sql = "SELECT DISTINCT articles.id_article, articles.title, articles.id_author, chapter.chapter_name
+        $sql = "SELECT DISTINCT articles.id_article, articles.title, articles.category, chapter.chapter_name
                 FROM articles
                 INNER JOIN chapter
                 ON articles.chapter = chapter.id_chapter
                 ";
-        return $Cdb->query($sql);
+        return $Cdb->queryFetchAll($sql);
     }
+
+
+
+
+
+
 
     public static function showChapters(): array
     {

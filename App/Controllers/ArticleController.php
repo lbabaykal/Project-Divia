@@ -14,7 +14,7 @@ class ArticleController extends Controller
     {
         $id_article = $this->route['id_article'];
 
-        $dataArticle = ArticleModel::dataArticle($id_article);
+        $dataArticle = ArticleModel::getDataArticle($id_article);
         if (!$dataArticle) {
             return $this->Not_Found_404();
         }

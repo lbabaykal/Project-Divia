@@ -40,12 +40,15 @@ abstract class Controller
         header('Location: /404.php');
     }
 
-
-
-    public function sanitizeString($string): string
+    public function sanitizeString(string $string): string
     {
         $string = trim($string); //Убирает пробелы
-        $string = strip_tags($string); //Убирает html теги
+        //$string = strip_tags($string); //Убирает html теги
         return htmlspecialchars($string); // Преобразует специальные символы в HTML-сущности
+    }
+
+    public function sanitizeInt(int $number): int
+    {
+        return preg_replace('/[^0-9]/u', '', $number);
     }
 }

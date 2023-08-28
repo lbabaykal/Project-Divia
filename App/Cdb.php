@@ -32,13 +32,13 @@ class Cdb {
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function insert(string $name_table, $data): void
+    public function insert(string $name_table, $dataInsert): void
     {
-        $array_keys = array_keys($data);
+        $array_keys = array_keys($dataInsert);
         $keys =  ':' . implode(',:',  $array_keys);
         $sql = "INSERT INTO $name_table (" . implode(',', $array_keys) . ") VALUES ($keys)";
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($data);
+        $sth->execute($dataInsert);
     }
 
     public function update(string $name_table, array $dataSet, array $dataWhere): void
@@ -58,15 +58,15 @@ class Cdb {
         $sth->execute($data);
     }
 
-    public function delete( $name_table, $data): void
+    public function delete( $name_table, $dataDelete): void
     {
         $KeyArray = [];
-        foreach (array_keys($data) as $key) {
+        foreach (array_keys($dataDelete) as $key) {
             $KeyArray[] .= $key . '=:' . $key;
         }
         $sql = "DELETE FROM $name_table WHERE " . implode(' AND ', $KeyArray);
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($data);
+        $sth->execute($dataDelete);
     }
 
     function transact(array $arraySql): void

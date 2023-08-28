@@ -61,5 +61,4 @@ class RatingController extends Controller
         return json_encode($answer);
     }
 
-
 }

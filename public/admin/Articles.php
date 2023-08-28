@@ -9,14 +9,14 @@
                 <tr>
                     <th>ID</th>
                     <th>Название</th>
-                    <th>Автор</th>
+                    <th>Категория</th>
                     <th>Раздел</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-            {BOOKS_ITEMS}
+            {ARTICLES_ITEMS}
             </tbody>
         </table>
     </div>

@@ -15,7 +15,7 @@
 * {
     margin: 0;    padding: 0;    outline: 0;
     font-family: 'Open Sans', sans-serif;
-    /*user-select: none;*/
+    user-select: none;
 }
 
 a, a:link, a:visited {

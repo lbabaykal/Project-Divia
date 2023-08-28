@@ -7,39 +7,51 @@ use App\Model;
 
 class Static_PageModel extends Model
 {
+    public const TABLE = 'static_page';
+
     public static function getStaticPage($name_page): false|array
     {
         $Cdb = Cdb::getInstance();
         $sql = "SELECT *
-                FROM static_page
-                WHERE name_eng='$name_page'
-        ";
+                FROM " . self::TABLE . "
+                WHERE name_eng={$name_page}";
         return $Cdb->queryFetch($sql);
     }
 
+    public static function getAllStaticPages(): false|array
+    {
+        $Cdb = Cdb::getInstance();
+        $sql = "SELECT * 
+                FROM " . self::TABLE . " 
+                WHERE 1";
+        return $Cdb->queryFetchAll($sql);
+    }
 
-
-
-
-    public static function showOneStaticPage($id_SP)
+    public static function getOneStaticPage(int $id): false|array
     {
         $Cdb = Cdb::getInstance();
         $sql = "SELECT *
-                FROM static_page
-                WHERE id_static_page='$id_SP'
-        ";
+                FROM " . SELF::TABLE . "
+                WHERE id_static_page={$id}";
         return $Cdb->queryFetch($sql);
     }
 
-
-    public static function showAllStaticPages()
+    public static function updateStaticPage(array $dataSet, array $dataWhere): array|false|null
     {
         $Cdb = Cdb::getInstance();
-        $sql = "SELECT id_static_page, name, name_eng
-                FROM static_page
-                WHERE 1
-        ";
-        return $Cdb->queryFetchAll($sql);
+        return $Cdb->update(self::TABLE, $dataSet, $dataWhere);
+    }
+
+    public static function insertStaticPage(array $dataInsert): array|false|null
+    {
+        $Cdb = Cdb::getInstance();
+        return $Cdb->insert(self::TABLE, $dataInsert);
+    }
+
+    public static function deleteStaticPage(array $dataDelete): array|false|null
+    {
+        $Cdb = Cdb::getInstance();
+        return $Cdb->delete(self::TABLE, $dataDelete);
     }
 
 }

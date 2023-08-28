@@ -10,22 +10,22 @@ class Admin_PanelModel extends Model
 
     public static function countUser(): int
     {
-        $Cdb = new Cdb();
+        $Cdb = Cdb::getInstance();
         $sql = 'SELECT id_user FROM users';
-        return count($Cdb->query($sql));
+        return count($Cdb->queryFetchAll($sql));
     }
 
-    public static function countBooks(): int
+    public static function countArticles(): int
     {
-        $Cdb = new Cdb();
+        $Cdb = Cdb::getInstance();
         $sql = 'SELECT id_article FROM articles';
-        return count($Cdb->query($sql));
+        return count($Cdb->queryFetchAll($sql));
     }
 
     public static function countComments(): int
     {
-        $Cdb = new Cdb();
+        $Cdb = Cdb::getInstance();
         $sql = 'SELECT id_comments FROM comments';
-        return count($Cdb->query($sql));
+        return count($Cdb->queryFetchAll($sql));
     }
 }
