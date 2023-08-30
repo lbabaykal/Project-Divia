@@ -5,7 +5,7 @@ const Modal = document.querySelector('.modal_windows');
 function Article_Add() {
     let Form = document.getElementById('book_add');
     $.ajax({
-        url: '/Article/Article_Add',
+        url: '/article/article_add',
         method: 'POST',
         dataType: 'json',
         data: new FormData(Form),
@@ -33,12 +33,12 @@ function Article_Add() {
     });
 }
 
-function Article_Edit($id_book) {
+function Article_Edit($id_article) {
     let Form = document.getElementById('book_edit');
     let FormReady = new FormData(Form);
-    FormReady.append('id_book', $id_book);
+    FormReady.append('id_article', $id_article);
     $.ajax({
-        url: '/Article/Article_Edit',
+        url: '/article/article_edit',
         method: 'POST',
         dataType: 'json',
         data: FormReady,
@@ -68,7 +68,7 @@ function Article_Edit($id_book) {
 
 function Article_Delete($id_article) {
     $.ajax({
-        url: '/Article/Article_Delete',
+        url: '/article/article_delete',
         method: 'POST',
         dataType: 'json',
         data: { id_article: $id_article },
@@ -103,8 +103,8 @@ function ShowAddModalWindow() {
     Modal.classList.toggle("show-modal");
 }
 
-function ShowEditModalWindow($id_book) {
-    $(".modal_windows").load("/Article/Template_Article_Edit", { id_book: $id_book });
+function ShowEditModalWindow($id_article) {
+    $(".modal_windows").load("/Article/Template_Article_Edit", { id_article : $id_article });
     Modal.classList.toggle("show-modal");
 }
 

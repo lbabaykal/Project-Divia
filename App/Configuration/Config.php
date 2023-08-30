@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'site_name' => 'MOON HARMONY',
+    'site_name' => '🌸MOON HARMONY🌸',
     'site_description' => 'Description....',
     'main_page' => 'custom',
 //    'main_page' => 'content',
@@ -11,5 +11,6 @@ return [
     'count_article_all' => 24,
     'dir_template' => '/Templates/AnoTheR',
     'email_support' => 'admin@moonharmony.com',
-
+    'image_size' => 1048576,
+    'site_status' => 'true',
 ];

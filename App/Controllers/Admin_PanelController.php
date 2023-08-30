@@ -18,7 +18,7 @@ class Admin_PanelController extends Controller
         $this->CheckAccess();
 
         $DataAdmin = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel',
+            'title' => App::getConfigSite('site_name') . 'Admin_Panel',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()
@@ -42,7 +42,7 @@ class Admin_PanelController extends Controller
         $this->CheckAccess();
 
         $DataAdmin = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel - Пользователи',
+            'title' => App::getConfigSite('site_name') . 'Admin_Panel - Пользователи',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()
@@ -66,7 +66,7 @@ class Admin_PanelController extends Controller
         $this->CheckAccess();
 
         $DataAdmin = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel - Статьи',
+            'title' => App::getConfigSite('site_name') . 'Admin_Panel - Статьи',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()
@@ -88,7 +88,7 @@ class Admin_PanelController extends Controller
         $this->CheckAccess();
 
         $DataAdmin = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Admin_Panel - Статические страницы',
+            'title' => App::getConfigSite('site_name') . 'Admin_Panel - Статические страницы',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()

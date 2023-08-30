@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Extensions;
 
 trait SingletonTrait
 {
@@ -10,10 +10,6 @@ trait SingletonTrait
 
     final public static function getInstance(): ?self
     {
-//        if (self::$instance === null) {
-//            self::$instance = new self;
-//        }
-//        return self::$instance;
         return self::$instance === null ? self::$instance = new self : self::$instance;
     }
 }

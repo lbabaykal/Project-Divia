@@ -3,7 +3,8 @@
 namespace App;
 
 use App\Controllers\UserController;
-use App\Registry;
+use App\Extensions\Error;
+use App\Extensions\Registry;
 
 class App {
 

@@ -14,11 +14,11 @@ class Static_PageController extends Controller
         $NamePage =  $this->route['name'];
         $DataStaticPage = Static_PageModel::getStaticPage($NamePage);
         if (!$DataStaticPage) {
-            $this->Not_Found_404();
+            return $this->Not_Found_404();
         }
 
         $DataMain = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . $DataStaticPage['name'] . '📜︎',
+            'title' => App::getConfigSite('site_name') . $DataStaticPage['name'] . '📜︎',
             'description' => '',
             'template'=> App::getConfigSite('dir_template'),
             'login' => LoginController::login()
@@ -92,8 +92,7 @@ class Static_PageController extends Controller
                         'description' => $description,
                     ];
                     Static_PageModel::insertStaticPage($data);
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Статическая страница добавлена!';
+                    $answer = ['success' => 'Yes', 'text' => 'Статическая страница добавлена!'];
                 }
             }
         } else {

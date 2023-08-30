@@ -25,7 +25,7 @@ class FavoritesController extends Controller
 
             if ( isset($id_article) ) {
                 $id_article = explode('/', $id_article);
-                $id_article = preg_replace('/[+-]/u', '', filter_var( $id_article[2], FILTER_SANITIZE_NUMBER_INT));
+                $id_article = $this->sanitizeInt($id_article[2]);
 
                 if (!UserController::getStatus()) {
                     $answer['text'] = 'Необходимо авторизоваться!';
@@ -34,13 +34,11 @@ class FavoritesController extends Controller
 
                 if ( FavoritesModel::getFavouriteUser($id_article) ) {
                     FavoritesModel::deleteUserFavorites($id_article);
-                    $answer['success'] = 'Yess';
-                    $answer['text'] = 'Успешно убрано из Избранного!';
+                    $answer = ['success' => 'Yess', 'text' => 'Убрано из Избранного!'];
                 }
                 else {
                     FavoritesModel::insertUserFavorites($id_article);
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Успешно добавлено в Избранное!';
+                    $answer = ['success' => 'Yes', 'text' => 'Добавлено в Избранное!'];
                 }
             }
             else {

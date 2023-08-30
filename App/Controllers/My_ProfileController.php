@@ -16,7 +16,7 @@ class My_ProfileController extends Controller
         $dataUser = UserController::getData();
 
         $DataMain = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . $dataUser['nickname'] . '🍓',
+            'title' => App::getConfigSite('site_name') . $dataUser['nickname'] . '🍓',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()
@@ -35,7 +35,7 @@ class My_ProfileController extends Controller
         $this->CheckUser();
         $dataUser = UserController::getData();
         $DataMain = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Избранное' . '💖︎',
+            'title' => App::getConfigSite('site_name') . 'Избранное💖︎',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()
@@ -61,7 +61,7 @@ class My_ProfileController extends Controller
         $dataUser = UserController::getData();
 
         $DataMain = [
-            'title' => '🌸' . App::getConfigSite('site_name') . '🌸' . 'Настройки' . '⚙🛠',
+            'title' => App::getConfigSite('site_name') . '⚙Настройки🛠',
             'description' => '',
             'template' => App::getConfigSite('dir_template'),
             'login' => LoginController::login()

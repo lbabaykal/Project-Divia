@@ -55,8 +55,7 @@ class CommentsController extends Controller
                         'comment_date' => $dateNow,
                     ];
                     CommentsModel::commentAdd($data);
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Комментарий успешно добавлен!';
+                    $answer = ['success' => 'Yes', 'text' => 'Комментарий успешно добавлен!'];
                 }
             } else {
                 $answer['text'] = 'Проблемы с отправленными данными.';

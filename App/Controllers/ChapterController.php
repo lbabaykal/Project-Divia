@@ -20,7 +20,7 @@ class ChapterController extends Controller
         $templateChapter = (new View)->render(TEMPLATES_DIR . '/Short_Article', ChapterModel::showArticlesChapter($chapter_name));
 
         $DataMain = [
-            'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . $dataChapter['chapter_name'] . '☘︎',
+            'title'=> App::getConfigSite('site_name') . $dataChapter['chapter_name'] . '☘︎',
             'description'=> $this->limitterDesc($dataChapter['description']),
             'template'=> App::getConfigSite('dir_template'),
             'login'=> LoginController::login(),

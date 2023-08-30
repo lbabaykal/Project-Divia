@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Extensions\SingletonTrait;
 use PDO;
 
 class Cdb {
@@ -85,6 +86,8 @@ class Cdb {
             die;
         }
     }
+
+
 
 
 

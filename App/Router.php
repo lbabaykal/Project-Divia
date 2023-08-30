@@ -7,14 +7,14 @@ class Router
     public static array $routes = [];
     public static array $route = [];
 
-    public static function addRoute($regex, $route = [])
+    public static function addRoute($regex, $route = []): void
     {
         self::$routes[$regex] = $route;
     }
 
     public static function dispatcher(): void
     {
-        $query = urldecode($_SERVER['QUERY_STRING']);
+        $query = urldecode($_SERVER['QUERY_STRING']);   //REQUEST_URI //QUERY_STRING
         if (self::searchRoute($query)) {
             $controller = '\\App\Controllers\\' . self::$route['controller'] . 'Controller';
             if (class_exists($controller)) {

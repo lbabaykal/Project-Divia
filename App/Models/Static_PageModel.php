@@ -14,7 +14,7 @@ class Static_PageModel extends Model
         $Cdb = Cdb::getInstance();
         $sql = "SELECT *
                 FROM " . self::TABLE . "
-                WHERE name_eng={$name_page}";
+                WHERE name_eng='{$name_page}'";
         return $Cdb->queryFetch($sql);
     }
 

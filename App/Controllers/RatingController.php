@@ -48,11 +48,9 @@ class RatingController extends Controller
                 }
 
                 if (RatingModel::doRating($id_article, $rating) === true) {
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Ваша оценка изменена на ' . $rating;
+                    $answer = ['success' => 'Yes', 'text' => 'Ваша оценка изменена на ' . $rating ];
                 } else {
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Оценка успешно добавлена!';
+                    $answer = ['success' => 'Yes', 'text' => 'Оценка успешно добавлена!'];
                 }
             }
         } else {

@@ -11,6 +11,9 @@ class SearchController extends Controller
     //====Not Working====
     public function actionIndex()
     {
+        var_dump($_GET);
+        echo '<br>';
+
         //$SearchText = $this->sanitizeString($_GET['search']);
 
         $dataSearchArticles = SearchModel::getSearchArticles('kek');
@@ -22,7 +25,7 @@ class SearchController extends Controller
         $templateSearchArticles = (new View)->render(TEMPLATES_DIR . '/Short_Article', $dataSearchArticles);
 
         $DataMain = [
-            'title'=> '🌸' . App::getConfigSite('site_name') . '🌸' . 'Поиск' . '🔍︎🔎︎',
+            'title'=> App::getConfigSite('site_name') . '🔍Поиск🔎',
             'description'=> '',
             'template'=> App::getConfigSite('dir_template'),
             'login'=> LoginController::login(),

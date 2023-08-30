@@ -4,7 +4,7 @@
         <div onclick="HideModalWindow()" class="window_close">❌</div>
     </div>
     <div class="window_content">
-        Вы действительно хотите удалить Книгу <span>ID: {ID_ARTICLE} {TITLE}</span>?<br>
+        Вы действительно хотите удалить статью <span>ID: {ID_ARTICLE} {TITLE}</span>?<br>
         Данное действие невозможно будет отменить.
     </div>
     <div class="window_buttons">

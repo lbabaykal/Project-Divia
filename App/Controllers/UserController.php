@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 use App\Cdb;
 use App\Controller;
+use App\Extensions\Session;
 use App\Models\UserModel;
-use App\Session;
 use App\View;
 
 class UserController extends Controller

@@ -4,22 +4,21 @@ namespace App\Controllers;
 
 use App\App;
 use App\Controller;
-use App\Session;
-use App\View;
+use App\Extensions\Session;
 use App\Models\LoginModel;
+use App\View;
 
 class LoginController extends Controller
 {
     public static function login(): false|string
     {
-        if ( UserController::getStatus() ) {
+        if (UserController::getStatus()) {
             $UserData = UserController::getData();
             $UserData['password'] = '';
             $UserData['phone'] = '';
-            return (new View)->render_v3( TEMPLATES_DIR . '/Login', $UserData, ['ADMIN_PANEL' => $UserData['access_admin'], 'AUTHORIZED' => '1', 'NOT_AUTHORIZED' => '0']);
-        }
-        else {
-            return (new View)->render_v3( TEMPLATES_DIR . '/Login', [], ['AUTHORIZED' => '0', 'NOT_AUTHORIZED' => '1']);
+            return (new View)->render_v3(TEMPLATES_DIR . '/Login', $UserData, ['ADMIN_PANEL' => $UserData['access_admin'], 'AUTHORIZED' => '1', 'NOT_AUTHORIZED' => '0']);
+        } else {
+            return (new View)->render_v3(TEMPLATES_DIR . '/Login', [], ['AUTHORIZED' => '0', 'NOT_AUTHORIZED' => '1']);
         }
     }
 
@@ -82,8 +81,7 @@ class LoginController extends Controller
                         'avatar' => $UserData['avatar']
                     ];
                     (new Session)->setSession('UserData', $userData);
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Авторизация прошла успешно!';
+                    $answer = ['success' => 'Yes', 'text' => 'Авторизация прошла успешно!'];
                 }
             }
             else {
@@ -125,8 +123,7 @@ class LoginController extends Controller
                     //НАСТРОИТЬ ОТПРАВКУ ПИСЕМ
                     //mail($to, $subject, $message, $headers);
 
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Новый пароль отправлен на Email.';
+                    $answer = ['success' => 'Yes', 'text' => 'Новый пароль отправлен на Email.'];
                 }
             }
             else {
@@ -184,8 +181,7 @@ class LoginController extends Controller
                         'reg_date' => $dateNow
                     ];
                     LoginModel::registrationUser($data);
-                    $answer['success'] = 'Yes';
-                    $answer['text'] = 'Регистрация прошла успешно!';
+                    $answer = ['success' => 'Yes', 'text' => 'Регистрация прошла успешно!'];
                 }
             }
             else {
